@@ -2,6 +2,8 @@
 
 A structured, 48-week curriculum to master Python, C, data structures, algorithms, and computer science fundamentals. 3 days per week, 144 days total, covering everything from basic programming to advanced systems topics.
 
+To this repository I plan to upload my entire directory as I work through the syllabus, including: syllabus generator python file, syllabus PDF, leetcode solution files and project files.
+
 ## 🎯 What You'll Learn
 
 - **Python Track**: From basics to advanced topics (OOP, decorators, asyncio, performance optimization)

@@ -6,16 +6,16 @@ from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
 
 # Output path
-output_pdf_path = "Programming_Syllabus_48Weeks_Complete.pdf"
+output_pdf_path = "syllabus/Programming_Syllabus_48Weeks_Complete.pdf"
 
 # Create the document in LANDSCAPE mode
 doc = SimpleDocTemplate(output_pdf_path, pagesize=landscape(LETTER),
-                        leftMargin=36, rightMargin=36, topMargin=50, bottomMargin=60)
+                        leftMargin=36, rightMargin=36, topMargin=48, bottomMargin=48)
 
 # Styles - improved readability
 styles = getSampleStyleSheet()
-styles.add(ParagraphStyle(name='TitleCustom', fontSize=20, leading=24, spaceAfter=12, alignment=TA_CENTER, textColor=colors.HexColor('#1A237E'), bold=True))
-styles.add(ParagraphStyle(name='SubtitleCustom', fontSize=12, leading=16, spaceAfter=16, alignment=TA_CENTER, textColor=colors.HexColor('#424242'), italic=True))
+styles.add(ParagraphStyle(name='TitleCustom', fontSize=20, leading=18, spaceAfter=12, alignment=TA_CENTER, textColor=colors.HexColor('#1A237E'), bold=True))
+styles.add(ParagraphStyle(name='SubtitleCustom', fontSize=12, leading=12, spaceAfter=18, alignment=TA_CENTER, textColor=colors.HexColor('#424242'), italic=True))
 styles.add(ParagraphStyle(name='HeadingCustom', fontSize=10, leading=12, spaceAfter=4, textColor=colors.HexColor('#34495E'), bold=True))
 styles.add(ParagraphStyle(name='BodyCustom', fontSize=7.5, leading=9, spaceAfter=2))
 styles.add(ParagraphStyle(name='BodyJustify', fontSize=10, leading=13, spaceAfter=8, alignment=TA_JUSTIFY))
@@ -30,12 +30,9 @@ content = []
 
 # ========== PAGE 1: INTRODUCTION ==========
 
-content.append(Paragraph("🌟 Comprehensive Programming Study Syllabus 🌟", styles['TitleCustom']))
-content.append(Paragraph("A 48-Week Journey to Master Computer Science Fundamentals", styles['SubtitleCustom']))
+content.append(Paragraph("# Comprehensive Programming Study Syllabus #", styles['TitleCustom']))
+content.append(Paragraph("A 48-Week Syllabus to Dive into Computer Science Fundamentals", styles['SubtitleCustom']))
 
-# Quote
-content.append(Paragraph('"The only way to learn a new programming language is by writing programs in it." — Dennis Ritchie', styles['QuoteStyle']))
-content.append(Spacer(1, 10))
 
 # Goal Section
 content.append(Paragraph("📚 Goal", styles['SectionHeader']))
@@ -47,57 +44,27 @@ content.append(Paragraph(
 ))
 content.append(Spacer(1, 8))
 
-# Methodology Section
-content.append(Paragraph("🎯 Methodology", styles['SectionHeader']))
-content.append(Paragraph(
-    "• <b>Build a Portfolio:</b> Construct a comprehensive GitHub repository filled with high-value projects demonstrating mastery across all three tracks. "
-    "• <b>Train on LeetCode:</b> Systematic practice on algorithmic problems to sharpen problem-solving skills. "
-    "• <b>Read the Classics:</b> Engage deeply with the canonical texts of computer science.",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 8))
-
-# How to Use Section
-content.append(Paragraph("💡 How to Make the Most of This Syllabus", styles['SectionHeader']))
-content.append(Paragraph(
-    "<b>Equipment:</b> A reliable laptop (Unix-like OS preferred), fast internet, your favorite IDE, and a sturdy wall for debugging frustrations. ☕ "
-    "<b>Time Commitment:</b> 3 days/week, 3-4 hours per session. Consistency beats intensity. "
-    "<b>Three-Track System:</b> Each week alternates between Python (algorithms), C/Systems (low-level), and Design/Math (theory). "
-    "<b>Project-First:</b> Every day includes a hands-on project—build your GitHub portfolio!",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-# Motivation
-content.append(Paragraph("🔥 Words of Wisdom", styles['SectionHeader']))
-content.append(Paragraph(
-    '"Programs must be written for people to read, and only incidentally for machines to execute." — <i>Abelson & Sussman</i> | '
-    '"Talk is cheap. Show me the code." — <i>Linus Torvalds</i> | '
-    '"Premature optimization is the root of all evil." — <i>Donald Knuth</i>',
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
 
 # Books Required for This Syllabus
 content.append(Paragraph("📚 Required Books for This Syllabus", styles['SectionHeader']))
 content.append(Paragraph(
-    "The following books are referenced throughout the 48-week curriculum. "
-    "The abbreviations shown are used in the daily reading assignments.",
+    "<i>The following books are referenced throughout the 48-week curriculum. </i>"
+    "<i>The abbreviations shown are used in the daily reading assignments.</i>",
     styles['BodyJustify']
 ))
 content.append(Spacer(1, 6))
 
 # Create a cleaner book list without table formatting issues
-content.append(Paragraph("<b>CLRS</b> — <i>Introduction to Algorithms</i> by Cormen, Leiserson, Rivest, and Stein", styles['BodyJustify']))
-content.append(Paragraph("<b>K&R</b> — <i>The C Programming Language</i> by Kernighan and Ritchie", styles['BodyJustify']))
 content.append(Paragraph("<b>Automate</b> — <i>Automate the Boring Stuff with Python</i> by Al Sweigart", styles['BodyJustify']))
 content.append(Paragraph("<b>Beej</b> — <i>Beej's Guide to Network Programming</i> by Brian Hall (free online)", styles['BodyJustify']))
+content.append(Paragraph("<b>CLRS</b> — <i>Introduction to Algorithms</i> by Cormen, Leiserson, Rivest, and Stein", styles['BodyJustify']))
 content.append(Paragraph("<b>CSAPP</b> — <i>Computer Systems: A Programmer's Perspective</i> by Bryant and O'Hallaron", styles['BodyJustify']))
-content.append(Paragraph("<b>OSTEP</b> — <i>Operating Systems: Three Easy Pieces</i> by Arpaci-Dusseau (free online)", styles['BodyJustify']))
-content.append(Paragraph("<b>Sipser</b> — <i>Introduction to the Theory of Computation</i> by Michael Sipser", styles['BodyJustify']))
 content.append(Paragraph("<b>Dragon Book</b> — <i>Compilers: Principles, Techniques, and Tools</i> by Aho et al.", styles['BodyJustify']))
 content.append(Paragraph("<b>Gang of Four</b> — <i>Design Patterns</i> by Gamma, Helm, Johnson, and Vlissides", styles['BodyJustify']))
-content.append(Paragraph("<b>CP Handbook</b> — <i>Competitive Programmer's Handbook</i> by Antti Laaksonen (free PDF)", styles['BodyJustify']))
+content.append(Paragraph("<b>Handbook</b> — <i>Competitive Programmer's Handbook</i> by Antti Laaksonen (free PDF)", styles['BodyJustify']))
+content.append(Paragraph("<b>K&R</b> — <i>The C Programming Language</i> by Kernighan and Ritchie", styles['BodyJustify']))
+content.append(Paragraph("<b>OSTEP</b> — <i>Operating Systems: Three Easy Pieces</i> by Arpaci-Dusseau (free online)", styles['BodyJustify']))
+content.append(Paragraph("<b>Sipser</b> — <i>Introduction to the Theory of Computation</i> by Michael Sipser", styles['BodyJustify']))
 content.append(Spacer(1, 4))
 content.append(Paragraph(
     "<i>Plus specific chapters from:</i> Elements of Programming Interviews, Python Official Tutorial, "
@@ -109,10 +76,37 @@ content.append(Paragraph(
 ))
 content.append(Spacer(1, 8))
 
+content.append(PageBreak())
+
+# How to Use Section
+content.append(Paragraph("💡 How to Make the Most of This Syllabus", styles['SectionHeader']))
 content.append(Paragraph(
-    "Now, let's begin. Your future self will thank you. 🚀",
+    "<b>Equipment:</b> A reliable laptop (Unix-like OS preferred), internet connectivity, IDE / text editor, terminal environment"
+        "<b>Time Commitment:</b> Sample breakout: 3 days/week, 3-4 hours per session. Consistency beats intensity. "
+    "<b>Three-Track Syllabus:</b> Each week / 3-day cluster alternates between Python (algorithms), C/Systems (low-level), and Design/Math (theory). "
+    "<b>Projects:</b> Every day includes a hands-on project—build your GitHub portfolio.",
     styles['BodyJustify']
 ))
+content.append(Spacer(1, 10))
+
+# Methodology Section
+content.append(Paragraph("🎯 Methodology", styles['SectionHeader']))
+content.append(Paragraph(
+    "<b>Build a Portfolio:</b> Construct a comprehensive GitHub repository filled with projects demonstrating mastery across three tracks. "
+    "<b>Train on LeetCode:</b> Practice problems assigned by topic (take with a grain of salt, problems assigned by Claude with no human checking. I will review as I take the course and return to the syllabus-generator.py to correct."
+    "<b>Read the Classics:</b> References several canonical texts of computer science.",
+    styles['BodyJustify']
+))
+content.append(Spacer(1, 8))
+
+# Motivation
+content.append(Paragraph("🔥 Words of Wisdom", styles['SectionHeader']))
+content.append(Paragraph('"Programs must be written for people to read, and only incidentally for machines to execute." — <i>Abelson & Sussman</i>', styles['QuoteStyle']))
+content.append(Paragraph('"The only way to learn a new programming language is by writing programs in it." — <i>Dennis Ritchie</i>', styles['QuoteStyle']))
+content.append(Paragraph('"Premature optimization is the root of all evil." — <i>Donald Knuth</i>', styles["QuoteStyle"]))
+content.append(Paragraph('"Talk is cheap. Show me the code." — <i>Linus Torvalds</i>', styles["QuoteStyle"]))
+
+content.append(Spacer(1, 10))
 
 content.append(PageBreak())
 
@@ -307,17 +301,17 @@ curriculum = {
         ("Design/Math", "NP-Completeness Intro", "CLRS §34.1-34.2", "Partition to K Equal Sum", "Reduce 3-SAT to Clique problem")
     ],
     26: [
-        ("Python", "Segment Trees", "CP Handbook Ch.9.3", "Range Sum Query Mutable, Count Smaller", "Segment tree for range queries (sum, min, max)"),
+        ("Python", "Segment Trees", "Handbook Ch.9.3", "Range Sum Query Mutable, Count Smaller", "Segment tree for range queries (sum, min, max)"),
         ("C/System", "Thread Synchronization", "OSTEP Ch.28-30", "Design Bounded Blocking Queue", "Dining philosophers problem with mutexes"),
         ("Design/Math", "Approximation Algorithms", "CLRS §35.1-35.2", "Set Cover (greedy)", "2-approximation for vertex cover problem")
     ],
     27: [
-        ("Python", "Binary Indexed Trees (Fenwick)", "CP Handbook Ch.9.4", "Count Smaller After Self, Reverse Pairs", "Fenwick tree for prefix sums and range updates"),
+        ("Python", "Binary Indexed Trees (Fenwick)", "Handbook Ch.9.4", "Count Smaller After Self, Reverse Pairs", "Fenwick tree for prefix sums and range updates"),
         ("C/System", "Lock-Free Programming Basics", "Art of Multiprocessor Ch.10", "Binary Search Tree Iterator", "Lock-free queue using compare-and-swap (CAS)"),
         ("Design/Math", "Randomized Algorithms", "CLRS §5.1-5.2", "Random Pick with Weight, Shuffle Array", "Randomized quicksort and Monte Carlo primality test")
     ],
     28: [
-        ("Python", "Suffix Arrays & LCP", "CP Handbook Ch.26", "Longest Duplicate Substring, Distinct Subseq", "Build suffix array and LCP array for pattern matching"),
+        ("Python", "Suffix Arrays & LCP", "Handbook Ch.26", "Longest Duplicate Substring, Distinct Subseq", "Build suffix array and LCP array for pattern matching"),
         ("C/System", "Virtual Memory Concepts", "OSTEP Ch.13-16", "LRU Cache, LFU Cache", "Page replacement simulator (FIFO, LRU, Optimal)"),
         ("Design/Math", "Advanced Graph: Network Flow", "CLRS §26.1-26.2", "Maximum Flow, Min Cut", "Ford-Fulkerson max flow with BFS (Edmonds-Karp)")
     ],
@@ -656,9 +650,7 @@ content.append(Paragraph(
 ))
 content.append(Spacer(1, 8))
 content.append(Paragraph(
-    "<b>These books represent the collective wisdom of computer science's greatest minds. "
-    "They are not just references—they are transformative works that will shape how you think about computing. "
-    "Read them deeply, work through their exercises, and return to them throughout your career.</b>",
+    "<b>Extended reading on these and more topics above. Read on to learn more.</b>",
     styles['BodyJustify']
 ))
 content.append(Spacer(1, 10))
