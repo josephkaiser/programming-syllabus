@@ -40,3 +40,6 @@ build/
 # Ignore environment files (if any)
 .env
 .venv/
+
+# Ignore PDFs
+*.pdf

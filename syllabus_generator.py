@@ -1,1451 +1,809 @@
 """
-Improved Programming Syllabus Generator
-For engineering graduates with mathematical background but limited programming experience
-More realistic pacing, better progression, and clearer learning objectives
+Programming Mastery: Foundation for the Long Haul - Version 3
+30-Week Intensive Learning Path for Career Changers with Technical Backgrounds
+
+Key Updates in v3:
+- Fixed phase headers (now appear before weeks 11, 19, 25)
+- Added grey transition callout boxes after weeks 10, 18, 24
+- Revised Phase 3: Terminal basics, testing, Git, CI/CD, performance
+- Added Week 2: Debugging fundamentals (high-level practices)
+- Integrated venv/pip/terminal in Week 1
+- Adjusted LeetCode to ~40 problems total with 1/day habit
+- Added bash scripting to systems career path
+- FIXED: Week boxes now stay on single pages (KeepTogether)
 """
 
-from reportlab.lib.pagesizes import LETTER, landscape
+from reportlab.lib.pagesizes import LETTER
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
 
 # Configuration
-TOTAL_WEEKS = 72  # More realistic: 1.5 years instead of 1 year
-DAYS_PER_WEEK = 3  # 3 days/week for sustainability
-OUTPUT_PATH = "Programming_Syllabus_72Weeks_Realistic.pdf"
-
-# Track global day counter
-day_counter = 1
+OUTPUT_PATH = "syllabus/programming-syllabus.pdf"
 
 def add_page_footer(canvas, doc):
-    """Add footer to each page"""
     canvas.saveState()
     canvas.setFont('Helvetica', 8)
     canvas.setFillColor(colors.grey)
     page_num = canvas.getPageNumber()
     text = f"Page {page_num}"
-    canvas.drawCentredString(5.5*inch, 0.5*inch, text)
+    canvas.drawCentredString(4.25*inch, 0.5*inch, text)
     canvas.restoreState()
 
-# Create document
-doc = SimpleDocTemplate(OUTPUT_PATH, pagesize=landscape(LETTER),
-                        leftMargin=36, rightMargin=36, topMargin=48, bottomMargin=48)
+doc = SimpleDocTemplate(OUTPUT_PATH, pagesize=LETTER,
+                        leftMargin=48, rightMargin=48, topMargin=60, bottomMargin=60)
 
 # Styles
 styles = getSampleStyleSheet()
-styles.add(ParagraphStyle(name='TitleCustom', fontSize=22, leading=26, spaceAfter=12, 
+styles.add(ParagraphStyle(name='TitleCustom', fontSize=20, leading=24, spaceAfter=10,
                          alignment=TA_CENTER, textColor=colors.HexColor('#1A237E'), bold=True))
-styles.add(ParagraphStyle(name='SubtitleCustom', fontSize=12, leading=14, spaceAfter=18, 
+styles.add(ParagraphStyle(name='SubtitleCustom', fontSize=11, leading=14, spaceAfter=14,
                          alignment=TA_CENTER, textColor=colors.HexColor('#424242'), italic=True))
-styles.add(ParagraphStyle(name='SectionHeader', fontSize=13, leading=16, spaceAfter=8, 
+styles.add(ParagraphStyle(name='SectionHeader', fontSize=12, leading=15, spaceAfter=6,
                          textColor=colors.HexColor('#1976D2'), bold=True))
-styles.add(ParagraphStyle(name='WeekHeader', fontSize=11, leading=14, spaceAfter=6, 
+styles.add(ParagraphStyle(name='WeekHeader', fontSize=10, leading=13, spaceAfter=4,
                          textColor=colors.HexColor('#2E7D32'), bold=True))
-styles.add(ParagraphStyle(name='BodyJustify', fontSize=10, leading=13, spaceAfter=8, alignment=TA_JUSTIFY))
-styles.add(ParagraphStyle(name='QuoteStyle', fontSize=10, leading=13, spaceAfter=8, 
-                         alignment=TA_CENTER, italic=True, textColor=colors.HexColor('#37474F')))
-styles.add(ParagraphStyle(name='HeaderCell', fontSize=7.5, leading=9, bold=True, alignment=TA_CENTER))
-styles.add(ParagraphStyle(name='PhaseHeader', fontSize=14, leading=18, spaceAfter=10,
+styles.add(ParagraphStyle(name='BodyJustify', fontSize=9, leading=11, spaceAfter=6, alignment=TA_JUSTIFY))
+styles.add(ParagraphStyle(name='PhaseHeader', fontSize=13, leading=16, spaceAfter=8,
                          textColor=colors.HexColor('#D32F2F'), bold=True))
-styles.add(ParagraphStyle(name='BulletList', fontSize=9.5, leading=12, spaceAfter=4, leftIndent=15))
+styles.add(ParagraphStyle(name='BulletList', fontSize=8.5, leading=10.5, spaceAfter=3, leftIndent=12))
+styles.add(ParagraphStyle(name='Quote', fontSize=8.5, leading=10.5, spaceAfter=5,
+                         alignment=TA_CENTER, italic=True, textColor=colors.HexColor('#555555')))
+styles.add(ParagraphStyle(name='DayHeader', fontSize=8, leading=10, bold=True))
+styles.add(ParagraphStyle(name='TransitionBox', fontSize=9, leading=11, spaceAfter=6,
+                         leftIndent=20, rightIndent=20, alignment=TA_JUSTIFY,
+                         textColor=colors.HexColor('#424242')))
 
 content = []
 
 # ========== TITLE PAGE ==========
-content.append(Paragraph("Programming Mastery: A Structured Path", styles['TitleCustom']))
-content.append(Paragraph("72-Week Curriculum for Engineering Graduates", styles['SubtitleCustom']))
-content.append(Spacer(1, 20))
-
-content.append(Paragraph("🎯 Philosophy", styles['SectionHeader']))
-content.append(Paragraph(
-    "This curriculum is designed for engineering graduates with strong mathematical foundations but limited "
-    "programming experience. Rather than rushing through topics, we prioritize <b>deep understanding</b> over "
-    "broad coverage. Each concept builds naturally on previous knowledge, with time to practice and internalize "
-    "before moving forward.",
-    styles['BodyJustify']
-))
+content.append(Paragraph("Programming Foundation: Built to Last", styles['TitleCustom']))
+content.append(Paragraph("30 Weeks to Deep Understanding and Practical Mastery", styles['SubtitleCustom']))
 content.append(Spacer(1, 12))
 
-content.append(Paragraph("⏱️ Time Commitment", styles['SectionHeader']))
+content.append(Paragraph("🎯 Philosophy: Learning for the Long Haul", styles['SectionHeader']))
 content.append(Paragraph(
-    "<b>Duration:</b> 72 weeks (approximately 18 months)<br/>"
-    "<b>Schedule:</b> 3 days per week, 3-4 hours per session<br/>"
-    "<b>Total Hours:</b> ~650-850 hours of focused study<br/>"
-    "<b>Pace:</b> Designed to be sustainable alongside full-time work or other commitments",
+    "This curriculum is designed for beginning programmers with technical backgrounds who want to "
+    "<b>build deep fundamentals</b> in programming. The focus is on retention, understanding, and building "
+    "toward meaningful personal projects that demonstrate real capability.",
     styles['BodyJustify']
 ))
-content.append(Spacer(1, 12))
+content.append(Spacer(1, 8))
 
-content.append(Paragraph("📚 Learning Approach", styles['SectionHeader']))
+content.append(Paragraph("⏱️ Time Investment", styles['SectionHeader']))
 content.append(Paragraph(
-    "<b>Foundation First:</b> Master Python thoroughly (Months 1-4) before introducing other languages<br/>"
-    "<b>Spiral Learning:</b> Revisit concepts with increasing depth as your understanding grows<br/>"
-    "<b>Project-Based:</b> Build real projects that demonstrate understanding, not just toy examples<br/>"
-    "<b>Theory + Practice:</b> Understand the 'why' behind algorithms, not just the 'how'<br/>"
-    "<b>Spaced Repetition:</b> Regular review of previous topics to ensure retention",
+    "<b>Duration:</b> 30 weeks (7-8 months)<br/>"
+    "<b>Schedule:</b> 4 days per week, 3-4 hours per session<br/>"
+    "<b>Total Hours:</b> ~400-500 hours of focused work<br/>"
+    "<b>Pace:</b> Aims to be sustainable alongside full-time commitments",
     styles['BodyJustify']
 ))
-content.append(Spacer(1, 12))
+content.append(Spacer(1, 8))
 
 content.append(Paragraph("🛠️ What You'll Need", styles['SectionHeader']))
 content.append(Paragraph(
     "<b>Required:</b><br/>"
-    "• A laptop (macOS, Linux, or Windows with WSL2)<br/>"
-    "• VS Code or PyCharm Community Edition<br/>"
-    "• GitHub account for version control<br/>"
-    "• 10-20 GB free disk space<br/><br/>"
-    "<b>Recommended:</b><br/>"
-    "• Dual monitors or large display (makes coding much easier)<br/>"
-    "• LeetCode Premium subscription (optional, for additional practice)<br/>"
-    "• Notebook for sketching algorithms and taking notes",
+    "• Computer (Mac, Linux, or Windows with WSL2)<br/>"
+    "• Text editor: VS Code (recommended) or Neovim (if you prefer)<br/>"
+    "• Internet connection<br/>"
+    "• GitHub account (free)<br/><br/>"
+    
+    "<b>Cost:</b><br/>"
+    "• All resources: $0-50 (one book purchase optional)<br/>"
+    "• LeetCode Premium: $35/month (optional, weeks 25-30 only)<br/>"
+    "• Hosting: $0-5/month (free tiers available)",
     styles['BodyJustify']
 ))
+content.append(Spacer(1, 8))
 
-content.append(PageBreak())
-
-# ========== CORE TEXTS ==========
-content.append(Paragraph("📖 Core Textbooks", styles['TitleCustom']))
-content.append(Spacer(1, 12))
-
+content.append(Paragraph("📚 Primary Textbook", styles['SectionHeader']))
 content.append(Paragraph(
-    "These books are carefully selected to match your background as an engineering graduate. "
-    "You'll start with accessible texts and gradually progress to more advanced material.",
+    "<b>Python Crash Course (3rd Edition) by Eric Matthes</b><br/>"
+    "This will be your primary resource for Weeks 1-10. It's project-focused, clear, and comprehensive. "
+    "Purchase the book ($40) or access via library. Supplementary readings will be provided for specific topics.",
     styles['BodyJustify']
 ))
-content.append(Spacer(1, 12))
+content.append(Spacer(1, 8))
 
-# Phase 1 books
-content.append(Paragraph("Phase 1: Foundations (Weeks 1-24)", styles['SectionHeader']))
+content.append(Paragraph("📋 How to Use This Syllabus", styles['SectionHeader']))
 content.append(Paragraph(
-    "<b>Primary:</b><br/>"
-    "• <i>Python Crash Course</i> by Eric Matthes (more beginner-friendly than Automate)<br/>"
-    "• <i>Think Python</i> by Allen Downey (free, excellent for programmers)<br/>"
-    "• <i>Grokking Algorithms</i> by Aditya Bhargava (visual, intuitive algorithm introduction)<br/><br/>"
-    "<b>Reference:</b><br/>"
-    "• Python official documentation (docs.python.org)<br/>"
-    "• <i>Effective Python</i> by Brett Slatkin (learn Python idioms)",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-# Phase 2 books
-content.append(Paragraph("Phase 2: Algorithms & Data Structures (Weeks 25-40)", styles['SectionHeader']))
-content.append(Paragraph(
-    "<b>Primary:</b><br/>"
-    "• <i>Introduction to Algorithms</i> (CLRS) - Selected chapters only, with guidance<br/>"
-    "• <i>Algorithm Design Manual</i> by Skiena (more practical than CLRS)<br/>"
-    "• <i>Problem Solving with Algorithms and Data Structures using Python</i> by Miller & Ranum (free)<br/><br/>"
-    "<b>Practice:</b><br/>"
-    "• <i>Elements of Programming Interviews in Python</i> by Aziz, Lee, and Prakash",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-# Phase 3 books
-content.append(Paragraph("Phase 3: Systems Programming (Weeks 41-56)", styles['SectionHeader']))
-content.append(Paragraph(
-    "<b>Primary:</b><br/>"
-    "• <i>The C Programming Language</i> by Kernighan & Ritchie (K&R)<br/>"
-    "• <i>Computer Systems: A Programmer's Perspective</i> (CSAPP) - Selected chapters<br/>"
-    "• <i>Operating Systems: Three Easy Pieces</i> (OSTEP) - Free online, very readable<br/><br/>"
-    "<b>Network Programming:</b><br/>"
-    "• <i>Beej's Guide to Network Programming</i> (free online)",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-# Phase 4 books
-content.append(Paragraph("Phase 4: Advanced Topics (Weeks 57-72)", styles['SectionHeader']))
-content.append(Paragraph(
-    "<b>Specialization (Choose Your Path):</b><br/>"
-    "• <i>Designing Data-Intensive Applications</i> by Kleppmann (backend/systems)<br/>"
-    "• <i>Hands-On Machine Learning</i> by Géron (ML/AI)<br/>"
-    "• <i>High Performance Python</i> by Gorelick (optimization)<br/>"
-    "• <i>Flask Web Development</i> or <i>FastAPI</i> docs (web development)<br/><br/>"
-    "<b>Theory (Optional but Valuable):</b><br/>"
-    "• <i>Introduction to the Theory of Computation</i> by Sipser",
+    "Each week contains:<br/>"
+    "• <b>Week Goal:</b> What you'll accomplish<br/>"
+    "• <b>Reading:</b> Specific chapters/pages or online resources<br/>"
+    "• <b>Daily Tasks:</b> 4 days of specific work (Day 1-4)<br/>"
+    "• <b>Weekly Project:</b> One concrete project to build<br/><br/>"
+    
+    "Complete textbook exercises as you encounter them. The syllabus points you to resources but doesn't "
+    "prescribe every detail—learn to navigate documentation and tutorials as part of the process.",
     styles['BodyJustify']
 ))
 
 content.append(PageBreak())
 
 # ========== CURRICULUM OVERVIEW ==========
-content.append(Paragraph("📋 Curriculum Structure", styles['TitleCustom']))
-content.append(Spacer(1, 12))
+content.append(Paragraph("📋 Curriculum Overview", styles['TitleCustom']))
+content.append(Spacer(1, 8))
 
-phases = [
-    ("PHASE 1: PYTHON FOUNDATIONS (Weeks 1-24, 6 months)", [
-        "Weeks 1-8: Python Basics - Syntax, data types, control flow, functions, basic I/O",
-        "Weeks 9-12: Core Data Structures - Lists, dicts, sets, tuples; file handling",
-        "Weeks 13-16: Object-Oriented Programming - Classes, inheritance, polymorphism",
-        "Weeks 17-20: Intermediate Python - Exceptions, modules, testing, debugging",
-        "Weeks 21-24: First Real Projects - CLI tools, data processing scripts, APIs",
-        "",
-        "<b>Key Milestone:</b> Build 3-5 substantial Python projects for your portfolio"
-    ]),
-    ("PHASE 2: ALGORITHMS & DATA STRUCTURES (Weeks 25-40, 4 months)", [
-        "Weeks 25-28: Algorithm Analysis - Big-O, recursion, problem-solving strategies",
-        "Weeks 29-32: Fundamental DS - Stacks, queues, linked lists, trees",
-        "Weeks 33-36: Sorting & Searching - All major algorithms with complexity analysis",
-        "Weeks 37-40: Graphs & Advanced DS - Graph algorithms, heaps, hash tables",
-        "",
-        "<b>Key Milestone:</b> Solve 75-100 LeetCode problems (Easy & Medium)"
-    ]),
-    ("PHASE 3: SYSTEMS PROGRAMMING (Weeks 41-56, 4 months)", [
-        "Weeks 41-46: C Fundamentals - Types, pointers, memory, structs",
-        "Weeks 47-50: Computer Systems - Memory hierarchy, processes, virtual memory",
-        "Weeks 51-54: Operating Systems - Concurrency, file systems, I/O",
-        "Weeks 55-56: Network Programming - Sockets, protocols, client-server",
-        "",
-        "<b>Key Milestone:</b> Build C programs demonstrating systems concepts"
-    ]),
-    ("PHASE 4: SPECIALIZATION & MASTERY (Weeks 57-72, 4 months)", [
-        "Weeks 57-60: Dynamic Programming - Systematic approach to complex problems",
-        "Weeks 61-64: Choose Your Path - Backend, ML, systems, or web development",
-        "Weeks 65-68: Advanced Topics - Design patterns, architecture, performance",
-        "Weeks 69-72: Capstone Project - Comprehensive project combining all skills",
-        "",
-        "<b>Key Milestone:</b> Portfolio-worthy capstone demonstrating mastery"
-    ])
-]
+content.append(Paragraph("PHASE 1: PYTHON MASTERY (Weeks 1-10)", styles['PhaseHeader']))
+content.append(Paragraph(
+    "Master Python fundamentals through hands-on practice. Build command-line tools and work with data. "
+    "By week 10, you'll be comfortable with Python syntax, data structures, debugging, and object-oriented programming.",
+    styles['BodyJustify']
+))
+content.append(Spacer(1, 6))
 
-for phase_title, phase_items in phases:
-    content.append(Paragraph(phase_title, styles['PhaseHeader']))
-    for item in phase_items:
-        if item:
-            content.append(Paragraph(f"• {item}", styles['BulletList']))
-    content.append(Spacer(1, 12))
+content.append(Paragraph("PHASE 2: WEB & DATABASES (Weeks 11-18)", styles['PhaseHeader']))
+content.append(Paragraph(
+    "Learn to build full-stack web applications. Work with databases, create APIs, and deploy real projects. "
+    "Build a personal website or application that you'll continue to develop.",
+    styles['BodyJustify']
+))
+content.append(Spacer(1, 6))
+
+content.append(Paragraph("PHASE 3: PROFESSIONAL PRACTICES (Weeks 19-24)", styles['PhaseHeader']))
+content.append(Paragraph(
+    "Learn how professional developers work: terminal proficiency, testing, version control workflows, CI/CD automation, "
+    "deployment, and performance optimization. Polish projects to professional quality.",
+    styles['BodyJustify']
+))
+content.append(Spacer(1, 6))
+
+content.append(Paragraph("PHASE 4: ALGORITHMS & CAPSTONE (Weeks 25-30)", styles['PhaseHeader']))
+content.append(Paragraph(
+    "Strengthen algorithmic thinking through focused problem-solving practice. Build a substantial capstone project that "
+    "demonstrates all your skills. Establish the habit of daily algorithm practice to maintain and grow your abilities.",
+    styles['BodyJustify']
+))
+content.append(Spacer(1, 8))
 
 content.append(PageBreak())
 
-# ========== DETAILED WEEKLY BREAKDOWN ==========
-content.append(Paragraph("📅 Detailed Week-by-Week Breakdown", styles['TitleCustom']))
-content.append(Spacer(1, 12))
-
-def create_week_table(week_num, week_title, days_data):
-    """Create a table for a single week"""
-    global day_counter
+def create_transition_box(phase_num, title, what_mastered, common_struggles, what_to_review, next_phase_mindset):
+    """Create a grey callout box for phase transitions"""
+    data = [
+        [Paragraph(f"<b>■ CHECKPOINT: Phase {phase_num} Complete — {title}</b>", styles['WeekHeader'])],
+        [Paragraph(f"<b>What You've Mastered:</b><br/>{what_mastered}", styles['TransitionBox'])],
+        [Paragraph(f"<b>Common Struggles at This Point:</b><br/>{common_struggles}", styles['TransitionBox'])],
+        [Paragraph(f"<b>Review If Needed:</b><br/>{what_to_review}", styles['TransitionBox'])],
+        [Paragraph(f"<b>Mindset for Next Phase:</b><br/>{next_phase_mindset}", styles['TransitionBox'])],
+    ]
     
-    # Header row
-    table_data = [['Day', 'Topic', 'Reading', 'Practice Problems', 'Project']]
-    
-    for day_topic, reading, problems, project in days_data:
-        table_data.append([
-            str(day_counter),
-            day_topic,
-            reading,
-            problems,
-            project
-        ])
-        day_counter += 1
-    
-    table = Table(table_data, colWidths=[0.5*inch, 2*inch, 1.8*inch, 1.7*inch, 2.5*inch])
+    table = Table(data, colWidths=[6*inch])
     table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1976D2')),
-        ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
-        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F5F5F5')),
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#E0E0E0')),
+        ('BOX', (0,0), (-1,-1), 1.5, colors.HexColor('#9E9E9E')),
+        ('LINEBELOW', (0,0), (-1,0), 1, colors.HexColor('#9E9E9E')),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), 8),
-        ('FONTSIZE', (0,1), (-1,-1), 7),
-        ('BOTTOMPADDING', (0,0), (-1,0), 8),
-        ('TOPPADDING', (0,1), (-1,-1), 6),
-        ('BOTTOMPADDING', (0,1), (-1,-1), 6),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F5F5F5')])
+        ('TOPPADDING', (0,0), (-1,-1), 8),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+        ('LEFTPADDING', (0,0), (-1,-1), 12),
+        ('RIGHTPADDING', (0,0), (-1,-1), 12),
     ]))
     
     return table
 
-# ========== PHASE 1: PYTHON FOUNDATIONS ==========
-content.append(Paragraph("■ PHASE 1: PYTHON FOUNDATIONS (Weeks 1-24)", styles['PhaseHeader']))
-content.append(Spacer(1, 8))
+def create_week_box(week_num, title, goal, reading, day1, day2, day3, day4, project):
+    """Create a detailed week breakdown that stays together on one page"""
+    data = [
+        [Paragraph(f"<b>Week {week_num}: {title}</b>", styles['WeekHeader']), ''],
+        [Paragraph('<b>Goal:</b>', styles['BodyJustify']), Paragraph(goal, styles['BodyJustify'])],
+        [Paragraph('<b>Reading:</b>', styles['BodyJustify']), Paragraph(reading, styles['BodyJustify'])],
+        ['', ''],
+        [Paragraph('<b>Day 1:</b>', styles['DayHeader']), Paragraph(day1, styles['BodyJustify'])],
+        [Paragraph('<b>Day 2:</b>', styles['DayHeader']), Paragraph(day2, styles['BodyJustify'])],
+        [Paragraph('<b>Day 3:</b>', styles['DayHeader']), Paragraph(day3, styles['BodyJustify'])],
+        [Paragraph('<b>Day 4:</b>', styles['DayHeader']), Paragraph(day4, styles['BodyJustify'])],
+        ['', ''],
+        [Paragraph('<b>Weekly Project:</b>', styles['BodyJustify']), Paragraph(project, styles['BodyJustify'])],
+    ]
+    
+    table = Table(data, colWidths=[1.2*inch, 4.8*inch])
+    table.setStyle(TableStyle([
+        ('SPAN', (0,0), (1,0)),
+        ('BACKGROUND', (0,0), (1,0), colors.HexColor('#E8F5E9')),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('LEFTPADDING', (0,0), (-1,-1), 6),
+        ('RIGHTPADDING', (0,0), (-1,-1), 6),
+        ('BOX', (0,0), (-1,-1), 1, colors.grey),
+        ('LINEBELOW', (0,0), (-1,0), 1, colors.grey),
+        ('LINEBELOW', (0,2), (-1,2), 0.5, colors.lightgrey),
+        ('LINEBELOW', (0,8), (-1,8), 0.5, colors.lightgrey),
+        ('BACKGROUND', (0,1), (0,1), colors.HexColor('#F5F5F5')),
+        ('BACKGROUND', (0,2), (0,2), colors.HexColor('#F5F5F5')),
+        ('BACKGROUND', (0,9), (0,9), colors.HexColor('#F5F5F5')),
+    ]))
+    
+    # KEY FIX: Wrap in KeepTogether to prevent page breaks within weeks
+    return KeepTogether([table, Spacer(1, 6)])
+
+# ========== PHASE 1: PYTHON MASTERY ==========
+content.append(Paragraph("■ PHASE 1: PYTHON MASTERY", styles['PhaseHeader']))
+content.append(Spacer(1, 6))
 
 # Week 1
-content.append(Paragraph("Week 1: Python Basics - Getting Started", styles['WeekHeader']))
-week1_days = [
-    ("Setup & First Programs", "Python Crash Course Ch.1",
-     "None - focus on setup", "Print patterns, simple calculator"),
-    ("Variables & Data Types", "Python Crash Course Ch.2",
-     "Complete setup exercises", "Temperature converter with validation"),
-    ("Control Flow: if/else", "Python Crash Course Ch.3",
-     "Basic type exercises", "Rock-paper-scissors game")
-]
-content.append(create_week_table(1, "Python Basics", week1_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    1,
+    "Setup, Terminal & First Programs",
+    "Set up development environment, learn terminal basics, write first Python programs",
+    "Python Crash Course: Chapters 1-2 (pages 1-40), basic terminal tutorial",
+    "Install Python, VS Code (or Neovim). Learn terminal: cd, ls, mkdir, pwd. Set up PATH. Create virtual environment (venv), install packages with pip.",
+    "Work through Chapter 2: variables, strings, numbers. Complete Try It Yourself exercises (2-1 through 2-9). Practice in terminal.",
+    "Practice string methods and number operations. Build simple calculator (add, subtract, multiply, divide) that runs from command line.",
+    "Create temperature converter (Celsius/Fahrenheit/Kelvin) with input validation and error messages. Package with proper venv.",
+    "Command-line calculator and temperature converter. Comfortable with terminal and virtual environments."
+))
 
-# Week 2
-content.append(Paragraph("Week 2: Loops and Problem Solving", styles['WeekHeader']))
-week2_days = [
-    ("While & For Loops", "Python Crash Course Ch.4",
-     "Loop exercises", "Number guessing game with hints"),
-    ("Loop Patterns & Nested Loops", "Think Python Ch.7",
-     "Pattern printing", "Multiplication table generator"),
-    ("Lists Introduction", "Python Crash Course Ch.5",
-     "LC: Two Sum (with hints)", "Todo list (basic version)")
-]
-content.append(create_week_table(2, "Loops", week2_days))
-content.append(Spacer(1, 10))
+# Week 2  
+content.append(create_week_box(
+    2,
+    "Debugging Fundamentals",
+    "Learn systematic debugging approaches and tools",
+    "Python Crash Course: Chapter 3 (Lists), debugging tutorial (choose your editor)",
+    "Learn Chapter 3 basics. Set up debugger: VSCode debugger OR Neovim DAP (see documentation). Set breakpoints, step through code.",
+    "Practice debugging: intentionally break code, use debugger to find issues. Learn to read stack traces and error messages.",
+    "Learn print debugging and logging module. When to use each approach. Debug previous week's projects.",
+    "Build number guessing game with intentional bugs, then systematically debug using multiple techniques. Document debugging process.",
+    "Number guessing game (debugged) and documented debugging workflow that you can reference."
+))
+
+content.append(PageBreak())
 
 # Week 3
-content.append(Paragraph("Week 3: Lists and Collections", styles['WeekHeader']))
-week3_days = [
-    ("List Operations & Methods", "Python Crash Course Ch.5",
-     "List manipulation", "Contact manager (list-based)"),
-    ("List Comprehensions", "Effective Python Item 27-30",
-     "LC: Remove Duplicates", "Data filtering tool"),
-    ("Tuples & List vs Tuple", "Think Python Ch.12",
-     "LC: Valid Palindrome", "Coordinate geometry calculator")
-]
-content.append(create_week_table(3, "Lists", week3_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    3,
+    "Lists and Loops",
+    "Master lists and iteration for working with collections",
+    "Python Crash Course: Chapter 4 (pages 59-82)",
+    "Study Chapter 4 on loops. Complete exercises 4-1 through 4-13. Practice for loops and range().",
+    "Work with list slicing and list comprehensions. Create lists of squares, cubes, and filtered lists.",
+    "Practice nested loops and enumerate(). Build multiplication table generator.",
+    "Build todo list manager: add tasks, mark complete, remove tasks, display all. Save to/load from file.",
+    "Command-line todo list application with persistent storage using a text file."
+))
 
 # Week 4
-content.append(Paragraph("Week 4: Functions - Building Blocks", styles['WeekHeader']))
-week4_days = [
-    ("Function Basics", "Python Crash Course Ch.6",
-     "Function exercises", "Math library (GCD, primes, factorial)"),
-    ("Parameters & Returns", "Think Python Ch.3, 6",
-     "LC: Fizz Buzz", "String utility library"),
-    ("Scope & Documentation", "Python docs: Functions",
-     "LC: Reverse Integer", "Unit converter with docstrings")
-]
-content.append(create_week_table(4, "Functions", week4_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    4,
+    "Dictionaries and User Input",
+    "Work with key-value pairs and create interactive programs",
+    "Python Crash Course: Chapters 5-7 (pages 83-132)",
+    "Chapter 5: if statements and conditional logic. Exercises 5-1 through 5-11.",
+    "Chapter 6: dictionaries. Work through all examples and complete exercises 6-1 through 6-11.",
+    "Chapter 7: user input and while loops. Practice input validation. Exercises 7-1 through 7-10.",
+    "Build complete program: phone book with add contact, search by name, list all, save/load from file.",
+    "Phone book application using dictionaries, with persistent file storage."
+))
 
 # Week 5
-content.append(Paragraph("Week 5: Dictionaries - Key-Value Magic", styles['WeekHeader']))
-week5_days = [
-    ("Dictionary Basics", "Python Crash Course Ch.7",
-     "Dict manipulation", "Word frequency counter"),
-    ("Dict Methods & Patterns", "Effective Python Item 16-18",
-     "LC: Contains Duplicate", "English-Spanish translator"),
-    ("Sets & When to Use Them", "Think Python Ch.19",
-     "LC: Single Number", "Remove duplicates from large file")
-]
-content.append(create_week_table(5, "Dictionaries", week5_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    5,
+    "Functions",
+    "Organize code with functions and understand scope",
+    "Python Crash Course: Chapter 8 (pages 133-154)",
+    "Read entire chapter on functions. Understand parameters, arguments, and return values. Exercises 8-1 through 8-7.",
+    "Practice functions with default values and keyword arguments. Exercises 8-8 through 8-11.",
+    "Work with arbitrary arguments (*args, **kwargs). Build function library: math utilities (GCD, LCM, prime check).",
+    "Create text analysis tool with functions: word count, character count, most frequent words, reading time estimate.",
+    "Text analysis library with multiple functions that process and analyze text files."
+))
+
+content.append(PageBreak())
 
 # Week 6
-content.append(Paragraph("Week 6: Strings - Text Processing", styles['WeekHeader']))
-week6_days = [
-    ("String Methods", "Python Crash Course Ch.8",
-     "String exercises", "Text formatter (line wrapping, case)"),
-    ("String Formatting", "Effective Python Item 4",
-     "LC: Valid Anagram", "CSV generator from data"),
-    ("Regular Expressions Intro", "Python docs: re module",
-     "LC: Implement strStr()", "Email validator")
-]
-content.append(create_week_table(6, "Strings", week6_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    6,
+    "Classes and OOP Basics",
+    "Learn object-oriented programming with classes and objects",
+    "Python Crash Course: Chapter 9 (pages 155-182)",
+    "Read Chapter 9 on classes. Understand __init__, self, and methods. Exercises 9-1 through 9-5.",
+    "Practice inheritance and method overriding. Exercises 9-6 through 9-9.",
+    "Work with importing classes and organizing code in modules. Exercises 9-10 through 9-13.",
+    "Build bank account simulator: Account class with deposit, withdraw, transfer. SavingsAccount with interest.",
+    "Bank account system with multiple account types using inheritance."
+))
 
 # Week 7
-content.append(Paragraph("Week 7: File I/O - Working with Data", styles['WeekHeader']))
-week7_days = [
-    ("Reading Files", "Python Crash Course Ch.9",
-     "File reading exercises", "Log file analyzer"),
-    ("Writing Files", "Think Python Ch.14",
-     "File writing exercises", "Markdown to HTML converter"),
-    ("File Paths & JSON", "Python docs: pathlib, json",
-     "LC: Valid Parentheses", "Configuration file manager")
-]
-content.append(create_week_table(7, "File I/O", week7_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    7,
+    "Files and Exceptions",
+    "Work with files and handle errors gracefully",
+    "Python Crash Course: Chapter 10 (pages 183-208)",
+    "Read about file operations: reading and writing. Work through all file examples. Exercises 10-1 through 10-5.",
+    "Study exception handling with try-except blocks. Exercises 10-6 through 10-10.",
+    "Practice JSON for data storage. Store and retrieve structured data. Exercises 10-11 through 10-13.",
+    "Build expense tracker: log expenses with date/category/amount, view by month, calculate totals, export to CSV.",
+    "Expense tracking application with JSON storage and CSV export functionality."
+))
+
+content.append(PageBreak())
 
 # Week 8
-content.append(Paragraph("Week 8: Review & First Real Project", styles['WeekHeader']))
-week8_days = [
-    ("Review Week - Solidify Basics", "Review previous chapters",
-     "Mixed LC Easy problems", "Refactor previous projects"),
-    ("Project Planning", "None - plan project",
-     "Continue LC practice", "Design expense tracker app"),
-    ("Project Day 1", "None",
-     "Debug previous solutions", "Build expense tracker (CLI)")
-]
-content.append(create_week_table(8, "Review", week8_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
+content.append(create_week_box(
+    8,
+    "Testing Your Code",
+    "Write tests to ensure code works correctly",
+    "Python Crash Course: Chapter 11 (pages 209-226)",
+    "Read about testing with pytest. Install pytest. Understand test functions and assertions. Exercises 11-1 through 11-2.",
+    "Learn to test classes. Write tests for previous projects. Exercise 11-3.",
+    "Practice test-driven development: write tests first, then implementation.",
+    "Build tested library: string manipulation functions with full test coverage (reverse, palindrome, anagram check).",
+    "String utility library with comprehensive pytest test suite."
+))
 
 # Week 9
-content.append(Paragraph("Week 9: Exception Handling", styles['WeekHeader']))
-week9_days = [
-    ("Try-Except Basics", "Python Crash Course Ch.10",
-     "Exception exercises", "Robust file reader"),
-    ("Custom Exceptions", "Effective Python Item 81-82",
-     "LC: Min Stack", "Input validator library"),
-    ("Context Managers", "Python docs: contextlib",
-     "LC: Valid Parentheses II", "Resource manager (with/as)")
-]
-content.append(create_week_table(9, "Exceptions", week9_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    9,
+    "Working with APIs",
+    "Fetch and process data from web APIs",
+    "Python Crash Course: Chapter 17 (pages 355-378), requests documentation",
+    "Install requests library. Learn HTTP GET requests. Fetch data from simple APIs (JSONPlaceholder).",
+    "Work with API authentication and headers. Practice parsing JSON responses.",
+    "Handle rate limits and errors. Cache API responses to files.",
+    "Build weather application: fetch current weather and 5-day forecast, display nicely formatted, cache data.",
+    "Weather application using OpenWeatherMap API with caching."
+))
 
 # Week 10
-content.append(Paragraph("Week 10: Debugging & Testing", styles['WeekHeader']))
-week10_days = [
-    ("Debugging Techniques", "Python Crash Course Ch.11",
-     "Debug buggy code", "Debug mystery programs"),
-    ("Unit Testing Intro", "Python docs: unittest",
-     "Write tests for previous code", "Test-driven calculator"),
-    ("pytest Basics", "pytest documentation",
-     "LC: Add Two Numbers", "Build & test string library")
-]
-content.append(create_week_table(10, "Testing", week10_days))
+content.append(create_week_box(
+    10,
+    "Data Visualization & Web Scraping",
+    "Create charts from data and extract data from websites",
+    "Python Crash Course: Chapters 15-16 (pages 305-354), BeautifulSoup basics",
+    "Install matplotlib. Create basic plots: line graphs, scatter plots. Work through Chapter 15 examples.",
+    "Study Chapter 16: download and analyze CSV data. Create bar charts and histograms.",
+    "Install BeautifulSoup. Learn HTML basics. Parse simple web pages and extract data.",
+    "Build price tracker: scrape product prices, store history in CSV, visualize price trends with matplotlib.",
+    "Price tracking and visualization tool combining web scraping and data visualization."
+))
+
+# TRANSITION BOX 1
 content.append(Spacer(1, 10))
+content.append(create_transition_box(
+    1,
+    "You Now Think in Python",
+    "Python syntax, data structures (lists, dicts), functions, OOP, file I/O, error handling, testing, APIs, debugging workflow, terminal comfort.",
+    "OOP concepts might still feel abstract. Debugging complex issues takes time. Testing feels tedious but necessary.",
+    "If OOP is unclear: redo Week 6 bank account project. If debugging is slow: practice with Week 2 techniques. If APIs confuse you: redo Week 9 weather app.",
+    "Now you shift from 'learning Python' to 'building applications.' Phase 2 uses everything you learned to create real web apps people can use."
+))
+content.append(Spacer(1, 10))
+
+content.append(PageBreak())
+
+# ========== PHASE 2: WEB & DATABASES ==========
+content.append(Paragraph("■ PHASE 2: WEB & DATABASES", styles['PhaseHeader']))
+content.append(Spacer(1, 6))
 
 # Week 11
-content.append(Paragraph("Week 11: Modules & Packages", styles['WeekHeader']))
-week11_days = [
-    ("Import System", "Python Crash Course Ch.12",
-     "Module exercises", "Multi-file project structure"),
-    ("Creating Packages", "Python packaging guide",
-     "LC: Palindrome Number", "Installable utility package"),
-    ("Virtual Environments", "venv documentation",
-     "Setup project envs", "Manage project dependencies")
-]
-content.append(create_week_table(11, "Modules", week11_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    11,
+    "HTML/CSS & Flask Basics",
+    "Learn web fundamentals and build your first web application",
+    "MDN HTML/CSS basics, Flask Quickstart (flask.palletsprojects.com)",
+    "Learn HTML essentials: tags, forms, links, semantic markup (3 hours). Build a static page with proper structure.",
+    "Learn CSS basics: selectors, box model, flexbox (3 hours). Style your static page. Understand browser inspector.",
+    "Install Flask. Create hello world app. Understand routes and views. Learn Jinja2 templates and template inheritance.",
+    "Build personal website: home page, about page, contact page. Use Flask with styled templates.",
+    "Multi-page personal website with navigation, styling, and Flask backend."
+))
 
 # Week 12
-content.append(Paragraph("Week 12: Command Line Tools", styles['WeekHeader']))
-week12_days = [
-    ("sys.argv & argparse", "Python docs: argparse",
-     "CLI exercises", "Command-line calculator"),
-    ("Environment Variables", "Python docs: os module",
-     "LC: Reverse String", "Config-driven CLI tool"),
-    ("Build Complete CLI App", "Real Python: CLI tutorial",
-     "LC: Roman to Integer", "File organizer (by type/date)")
-]
-content.append(create_week_table(12, "CLI", week12_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    12,
+    "Flask Forms and Validation",
+    "Handle user input securely with forms",
+    "Flask-WTF documentation, form handling tutorials",
+    "Install Flask-WTF. Create form classes with validation rules. Understand POST vs GET.",
+    "Handle form submissions and display validation errors. Use flash messages for user feedback.",
+    "Add CSRF protection. Practice form processing with different field types.",
+    "Build working contact form: name, email, subject, message fields with validation. Store submissions in JSON file.",
+    "Contact form with validation and data persistence to JSON."
+))
 
 content.append(PageBreak())
 
-# Week 13: OOP Introduction
-content.append(Paragraph("Week 13: Object-Oriented Programming - Classes", styles['WeekHeader']))
-week13_days = [
-    ("Class Basics", "Python Crash Course Ch.13",
-     "Class exercises", "Create BankAccount class"),
-    ("Methods & self", "Think Python Ch.15-16",
-     "LC: Design HashSet", "Student class with grades"),
-    ("__init__ & Attributes", "Effective Python Item 37-40",
-     "LC: Design HashMap", "Playing card deck (Card class)")
-]
-content.append(create_week_table(13, "OOP Basics", week13_days))
-content.append(Spacer(1, 10))
+# Week 13
+content.append(create_week_box(
+    13,
+    "SQL Fundamentals (Week 1)",
+    "Learn to query and manipulate databases",
+    "SQLite Tutorial (sqlitetutorial.net): Core concepts through JOINs",
+    "Install DB Browser for SQLite. Learn database concepts. Practice CREATE TABLE, INSERT, data types.",
+    "Master SELECT queries: WHERE, ORDER BY, LIMIT, DISTINCT. Practice on sample database.",
+    "Study aggregate functions: COUNT, SUM, AVG, GROUP BY, HAVING. Analyze data with queries.",
+    "Practice on sample database: write 20+ queries of increasing complexity. Save and document your queries.",
+    "Portfolio of SQL queries demonstrating core competency."
+))
 
 # Week 14
-content.append(Paragraph("Week 14: OOP - Inheritance", styles['WeekHeader']))
-week14_days = [
-    ("Inheritance Basics", "Python Crash Course Ch.14",
-     "Inheritance exercises", "Vehicle hierarchy"),
-    ("Method Overriding", "Think Python Ch.17",
-     "LC: Min Stack", "Shape classes (area/perimeter)"),
-    ("super() & MRO", "Effective Python Item 40",
-     "LC: Max Stack", "Employee management system")
-]
-content.append(create_week_table(14, "Inheritance", week14_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    14,
+    "SQL Fundamentals (Week 2)",
+    "Master JOINs and database design",
+    "SQLite Tutorial: JOINs, subqueries, indexes. Database design principles.",
+    "Learn JOINs: INNER, LEFT, RIGHT. Practice combining data from multiple tables.",
+    "Study subqueries and nested queries. Learn when to use vs JOINs.",
+    "Understand indexes and query performance. Learn database normalization basics.",
+    "Design database schema for blog: users, posts, comments, tags tables with relationships. Create, populate, query.",
+    "Blog database schema with sample data and complex queries demonstrating JOINs."
+))
+
+content.append(PageBreak())
 
 # Week 15
-content.append(Paragraph("Week 15: OOP - Polymorphism & Magic Methods", styles['WeekHeader']))
-week15_days = [
-    ("Polymorphism", "Python docs: Data model",
-     "Polymorphism exercises", "Payment processor (multiple types)"),
-    ("Magic Methods (__str__, __repr__)", "Effective Python Item 75-77",
-     "LC: Range Sum Query", "Custom fraction class"),
-    ("__eq__, __lt__, __add__", "Python data model docs",
-     "LC: Compare Version Numbers", "Money class with operators")
-]
-content.append(create_week_table(15, "Polymorphism", week15_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    15,
+    "SQLAlchemy ORM",
+    "Work with databases using Python objects",
+    "SQLAlchemy documentation, Flask-SQLAlchemy quickstart",
+    "Install Flask-SQLAlchemy. Define models as Python classes. Understand ORM concepts.",
+    "Practice CRUD operations: create, read, update, delete records using ORM instead of raw SQL.",
+    "Learn relationships: one-to-many with foreign keys. Query across relationships.",
+    "Build note-taking app with database: create notes with title/content, list all, view one, update, delete.",
+    "Note-taking web app with SQLite database and full CRUD operations."
+))
 
 # Week 16
-content.append(Paragraph("Week 16: OOP - Design Principles", styles['WeekHeader']))
-week16_days = [
-    ("Encapsulation & Properties", "Effective Python Item 44-46",
-     "Property exercises", "Temperature class (auto-convert)"),
-    ("Composition over Inheritance", "Python patterns",
-     "LC: LRU Cache", "Library system (Book, Member)"),
-    ("Abstract Base Classes", "Python docs: abc module",
-     "LC: Design Browser History", "Plugin system with ABC")
-]
-content.append(create_week_table(16, "Design", week16_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
+content.append(create_week_box(
+    16,
+    "Database Migrations",
+    "Version control your database schema",
+    "Flask-Migrate documentation, Alembic basics",
+    "Install Flask-Migrate. Initialize migrations. Create first migration. Understand migration files.",
+    "Practice schema changes: add columns, create new tables. Apply and rollback migrations.",
+    "Learn migration best practices. Handle data migrations safely.",
+    "Add features to note app: created_at timestamp, updated_at, categories. Use migrations for all schema changes.",
+    "Enhanced note app with timestamps and proper database migrations."
+))
 
 # Week 17
-content.append(Paragraph("Week 17: Iterators & Generators", styles['WeekHeader']))
-week17_days = [
-    ("Iterator Protocol", "Python docs: Iterator types",
-     "Iterator exercises", "Custom range() implementation"),
-    ("Generators & yield", "Effective Python Item 30-32",
-     "LC: Generate Parentheses", "Fibonacci generator (infinite)"),
-    ("Generator Expressions", "Think Python Ch.19",
-     "LC: Letter Combinations", "File line generator (lazy)")
-]
-content.append(create_week_table(17, "Iterators", week17_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    17,
+    "User Authentication",
+    "Implement login and user sessions",
+    "Flask-Login documentation, password hashing guide",
+    "Install Flask-Login. Create User model with password hashing (werkzeug.security).",
+    "Implement registration: new user signup with password validation and email verification format.",
+    "Build login/logout functionality. Protect routes with @login_required decorator. Understand sessions.",
+    "Add user accounts to note app: each user sees only their notes, user profile page, password change.",
+    "Multi-user note application with authentication and private notes per user."
+))
+
+content.append(PageBreak())
 
 # Week 18
-content.append(Paragraph("Week 18: Functional Programming", styles['WeekHeader']))
-week18_days = [
-    ("map, filter, reduce", "Python docs: functools",
-     "Functional exercises", "Data pipeline with functions"),
-    ("Lambda Functions", "Effective Python Item 19",
-     "LC: Sort Characters", "Custom sort implementations"),
-    ("Decorators Intro", "Python docs: Decorators",
-     "LC: Valid Sudoku", "Timing decorator")
-]
-content.append(create_week_table(18, "Functional", week18_days))
+content.append(create_week_box(
+    18,
+    "Building REST APIs & Frontend Integration",
+    "Create API endpoints and connect with JavaScript",
+    "Flask-RESTful documentation, MDN Fetch API tutorial",
+    "Understand REST principles: resources, HTTP methods, status codes. Build API for one resource.",
+    "Implement CRUD API endpoints. Return JSON responses. Test with curl or Postman.",
+    "Learn JavaScript fetch() API basics. Make requests to your backend. Handle JSON responses.",
+    "Build dynamic todo page: JavaScript frontend fetches from Flask API, add/delete without page refresh.",
+    "Single-page todo application with JavaScript frontend calling your REST API."
+))
+
+# TRANSITION BOX 2
 content.append(Spacer(1, 10))
+content.append(create_transition_box(
+    2,
+    "You Can Build Full-Stack Applications",
+    "HTML/CSS basics, Flask web framework, form handling, SQL and database design, ORM with SQLAlchemy, database migrations, user authentication, REST APIs, JavaScript/frontend basics.",
+    "Database design is hard. Authentication security is tricky. Frontend/backend integration can be confusing at first.",
+    "If SQL unclear: redo Weeks 13-14 exercises. If authentication confuses you: review Week 17 step-by-step. If stuck on APIs: review REST principles and practice with Postman.",
+    "You can now build any CRUD application. Phase 3 teaches you to work like a professional: testing, version control, CI/CD, deployment, performance."
+))
+content.append(Spacer(1, 10))
+
+content.append(PageBreak())
+
+# ========== PHASE 3: PROFESSIONAL PRACTICES ==========
+content.append(Paragraph("■ PHASE 3: PROFESSIONAL PRACTICES", styles['PhaseHeader']))
+content.append(Spacer(1, 6))
 
 # Week 19
-content.append(Paragraph("Week 19: Advanced Decorators", styles['WeekHeader']))
-week19_days = [
-    ("Decorator Patterns", "Effective Python Item 26",
-     "Decorator exercises", "Caching decorator"),
-    ("functools & wraps", "Python functools docs",
-     "LC: LRU Cache implementation", "Retry decorator with backoff"),
-    ("Class Decorators", "Advanced Python",
-     "LC: Design Hit Counter", "Rate limiter decorator")
-]
-content.append(create_week_table(19, "Decorators", week19_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    19,
+    "Terminal & Testing Web Applications",
+    "Deepen terminal skills and test Flask apps",
+    "Bash scripting basics (high-level overview), pytest-flask plugin documentation",
+    "Review terminal fundamentals: navigation, file operations, pipes, grep, environment variables. Practice bash command chaining.",
+    "Install pytest-flask. Learn to test routes and views. Write test client requests for your Flask apps.",
+    "Test form submissions and validation. Mock database operations. Understand fixtures.",
+    "Add comprehensive test suite to your note app: test all routes, authentication, CRUD operations, edge cases.",
+    "Full test coverage for note app with pytest. Comfort with terminal for daily tasks."
+))
 
 # Week 20
-content.append(Paragraph("Week 20: Data Processing with Python", styles['WeekHeader']))
-week20_days = [
-    ("Working with CSV", "Python docs: csv module",
-     "CSV exercises", "Sales data analyzer"),
-    ("JSON Processing", "Python docs: json module",
-     "LC: Serialize/Deserialize BST", "API response processor"),
-    ("Data Cleaning Techniques", "Real Python: Data cleaning",
-     "LC: String to Integer (atoi)", "Clean messy dataset")
-]
-content.append(create_week_table(20, "Data Processing", week20_days))
+content.append(create_week_box(
+    20,
+    "Advanced Testing & Code Quality",
+    "Master testing patterns and write professional code",
+    "pytest documentation, PEP 8 style guide, type hints tutorial",
+    "Learn test organization: fixtures, parametrize, markers. Practice testing with databases.",
+    "Install black, pylint, mypy. Format and lint your code. Add type hints to functions.",
+    "Test API endpoints: verify status codes, response data, error handling. Achieve >80% coverage.",
+    "Add tests to todo API: test all CRUD operations, authentication, error cases. Format all code with black.",
+    "Professionally tested and formatted API with comprehensive test suite."
+))
+
+content.append(PageBreak())
+
+# Week 21
+content.append(create_week_box(
+    21,
+    "Git Workflows & Collaboration",
+    "Master version control for professional development",
+    "Pro Git book (free online), Atlassian Git tutorials, learngitbranching.js.org",
+    "Review Git basics. Practice branching and merging. Create feature branches for each feature.",
+    "Learn rebase vs merge. Handle merge conflicts. Practice interactive rebase to clean history.",
+    "Understand pull request workflow. Write good commit messages. Learn .gitignore patterns.",
+    "Organize all projects in GitHub: clean commit history, comprehensive READMEs, proper .gitignore files.",
+    "All previous projects properly organized in GitHub with professional repository structure."
+))
+
+# Week 22
+content.append(create_week_box(
+    22,
+    "Environment & Configuration Management",
+    "Handle configuration and secrets properly",
+    "12-factor app methodology, python-dotenv documentation",
+    "Learn environment variables. Never commit secrets. Use .env files with python-dotenv.",
+    "Create separate configs for development, testing, production environments.",
+    "Practice with config objects and environment-based settings. Understand security implications.",
+    "Refactor Flask app: move all secrets to environment variables, create config classes for each environment.",
+    "Application properly configured with environment variables and multiple environments."
+))
+
+# Week 23
+content.append(create_week_box(
+    23,
+    "CI/CD with GitHub Actions",
+    "Automate testing and deployment",
+    "GitHub Actions official documentation and tutorials (comprehensive)",
+    "Learn GitHub Actions basics: workflows, jobs, steps. Follow comprehensive tutorial (day 1-2 of work).",
+    "Create workflow: run tests on every push and PR. Set up automated linting and formatting checks.",
+    "Add deployment automation: automatically deploy to production when tests pass on main branch.",
+    "Implement full CI/CD for one project: automated tests, linting, deployment. Watch it work on a real PR.",
+    "Project with complete CI/CD pipeline: auto-test and auto-deploy."
+))
+
+content.append(PageBreak())
+
+# Week 24
+content.append(create_week_box(
+    24,
+    "Performance & Deployment",
+    "Optimize and deploy production applications",
+    "Flask performance tips, cProfile documentation, deployment platform docs (Render/Railway)",
+    "Profile your app with cProfile. Identify slow queries. Add database indexes where needed.",
+    "Implement caching with Flask-Caching. Cache expensive operations and repeated queries.",
+    "Deploy your best project to Render/Railway/PythonAnywhere. Set up proper environment config and monitoring.",
+    "Optimize deployed app: add caching, fix N+1 queries, monitor performance. Ensure it handles real traffic.",
+    "Production-ready application deployed with performance optimizations and monitoring."
+))
+
+# TRANSITION BOX 3
+content.append(Spacer(1, 10))
+content.append(create_transition_box(
+    3,
+    "You Code Like a Professional",
+    "Terminal proficiency, comprehensive testing, Git workflows, environment configuration, CI/CD automation, deployment experience, performance optimization.",
+    "CI/CD can break in unexpected ways. Performance optimization is an art. Deployment has many moving parts.",
+    "If CI/CD fails: read error messages carefully, check GitHub Actions docs. If performance unclear: review database indexes. If deployment fails: verify environment variables.",
+    "You have professional developer skills. Phase 4 adds algorithmic thinking and a capstone project to demonstrate everything you've learned."
+))
 content.append(Spacer(1, 10))
 
 content.append(PageBreak())
 
-# Week 21-24: Projects
-content.append(Paragraph("Week 21: Real-World Project 1 - Web Scraper", styles['WeekHeader']))
-week21_days = [
-    ("HTTP Basics & requests", "requests documentation",
-     "HTTP exercises", "Fetch and parse web pages"),
-    ("HTML Parsing (BeautifulSoup)", "BeautifulSoup docs",
-     "Parsing exercises", "Extract structured data"),
-    ("Build Complete Scraper", "Scraping best practices",
-     "LC: Design Web Crawler", "News headline aggregator")
-]
-content.append(create_week_table(21, "Project", week21_days))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("Week 22: Real-World Project 2 - REST API Client", styles['WeekHeader']))
-week22_days = [
-    ("REST API Concepts", "REST API tutorial",
-     "API exercises", "Weather API client"),
-    ("Authentication & Headers", "requests auth docs",
-     "LC: Design Rate Limiter", "GitHub API explorer"),
-    ("Error Handling & Retry", "requests retry patterns",
-     "LC: Design Logger", "Robust API wrapper library")
-]
-content.append(create_week_table(22, "Project", week22_days))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("Week 23: Real-World Project 3 - Data Dashboard", styles['WeekHeader']))
-week23_days = [
-    ("matplotlib Basics", "matplotlib tutorial",
-     "Plotting exercises", "Visualize CSV data"),
-    ("Data Analysis Intro", "pandas basics",
-     "LC: Valid Parenthesis String", "Stock price analyzer"),
-    ("Complete Dashboard", "Dashboard tutorial",
-     "LC: Basic Calculator", "Personal finance dashboard")
-]
-content.append(create_week_table(23, "Project", week23_days))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("Week 24: Portfolio Review & Phase 1 Wrap-up", styles['WeekHeader']))
-week24_days = [
-    ("Code Review & Refactoring", "Clean Code principles",
-     "Refactor old projects", "Polish portfolio projects"),
-    ("Documentation & README", "README best practices",
-     "LC: String Compression", "Write comprehensive docs"),
-    ("Git & GitHub Mastery", "Git tutorial advanced",
-     "LC: Design File System", "Setup portfolio repository")
-]
-content.append(create_week_table(24, "Review", week24_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# ========== PHASE 2: ALGORITHMS ==========
-content.append(Paragraph("■ PHASE 2: ALGORITHMS & DATA STRUCTURES (Weeks 25-40)", styles['PhaseHeader']))
-content.append(Spacer(1, 8))
+# ========== PHASE 4: ALGORITHMS & CAPSTONE ==========
+content.append(Paragraph("■ PHASE 4: ALGORITHMS & CAPSTONE", styles['PhaseHeader']))
+content.append(Spacer(1, 6))
 
 # Week 25
-content.append(Paragraph("Week 25: Algorithm Analysis - Big O Notation", styles['WeekHeader']))
-week25_days = [
-    ("Time Complexity Intro", "Grokking Algorithms Ch.1",
-     "Calculate Big-O exercises", "Benchmark sorting algorithms"),
-    ("Space Complexity", "CLRS Ch.2 (intro only)",
-     "LC: Two Sum analysis", "Memory profiler for algorithms"),
-    ("Best/Worst/Average Case", "Algorithm Design Manual Ch.2",
-     "LC: Binary Search", "Compare algorithm performance")
-]
-content.append(create_week_table(25, "Analysis", week25_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    25,
+    "Algorithm Fundamentals",
+    "Learn Big-O and problem-solving patterns",
+    "Grokking Algorithms: Chapters 1-4, LeetCode Easy problems",
+    "Study Big-O notation. Analyze time and space complexity. Practice examples on paper.",
+    "Learn two pointers pattern. Solve: Two Sum II, Remove Duplicates from Sorted Array (LeetCode).",
+    "Study sliding window pattern. Solve: Maximum Average Subarray, Longest Substring Without Repeating.",
+    "Solve 6 more LeetCode Easy problems mixing patterns. Focus on understanding, not speed. Start habit: 1 problem per day.",
+    "10 solved algorithm problems with documented solutions and complexity analysis."
+))
 
 # Week 26
-content.append(Paragraph("Week 26: Recursion - The Foundation", styles['WeekHeader']))
-week26_days = [
-    ("Recursion Basics", "Grokking Algorithms Ch.3",
-     "Recursion exercises", "Factorial & Fibonacci variants"),
-    ("Recursion Patterns", "Think Python Ch.5-6 review",
-     "LC: Climbing Stairs", "Tower of Hanoi solver"),
-    ("Recursion vs Iteration", "Algorithm Design Manual",
-     "LC: Pow(x, n)", "Visualize recursion tree")
-]
-content.append(create_week_table(26, "Recursion", week26_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    26,
+    "Arrays, Strings & Hash Tables",
+    "Master fundamental data structure patterns",
+    "LeetCode Arrays 101 explore card, String problems, Hash Table patterns",
+    "Solve 4 array problems: Best Time to Buy Stock, Rotate Array, Plus One, Move Zeroes.",
+    "Solve 4 string problems: Valid Palindrome, Reverse String, Valid Anagram, First Unique Character.",
+    "Study hash table pattern. Solve: Group Anagrams, Contains Duplicate, Two Sum.",
+    "Solve 5 more mixed problems. Maintain 1 problem per day habit. Focus on pattern recognition.",
+    "Approximately 16 more solved problems (26 total). Strong foundation in arrays, strings, hash tables."
+))
+
+content.append(PageBreak())
 
 # Week 27
-content.append(Paragraph("Week 27: Sorting Algorithms - Comparison Based", styles['WeekHeader']))
-week27_days = [
-    ("Bubble, Insertion, Selection", "Grokking Algorithms Ch.2",
-     "Implement 3 sorts", "Sorting visualizer"),
-    ("Merge Sort", "CLRS Ch.2.3",
-     "LC: Merge Sorted Array", "Merge sort with analysis"),
-    ("Quick Sort", "Grokking Algorithms Ch.4",
-     "LC: Sort Colors", "Quicksort with pivoting")
-]
-content.append(create_week_table(27, "Sorting", week27_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    27,
+    "Linked Lists & Trees + Capstone Planning",
+    "Learn node-based structures and plan final project",
+    "LeetCode Linked List and Binary Tree explore cards",
+    "Implement LinkedList from scratch. Solve: Reverse Linked List, Merge Two Sorted Lists.",
+    "Study binary tree traversals: preorder, inorder, postorder, level-order. Solve: Max Depth, Invert Tree.",
+    "Solve: Same Tree, Symmetric Tree, Path Sum. Practice recursion on trees.",
+    "Plan capstone project: write specification, design database schema, create wireframes. Solve 1 problem/day.",
+    "4-5 more solved problems (~31 total). Detailed capstone project plan ready to implement."
+))
 
 # Week 28
-content.append(Paragraph("Week 28: Sorting - Advanced & Analysis", styles['WeekHeader']))
-week28_days = [
-    ("Heap Sort", "CLRS Ch.6",
-     "LC: Kth Largest Element", "Heapsort implementation"),
-    ("Counting & Radix Sort", "CLRS Ch.8",
-     "LC: Sort Array", "Sort large integer dataset"),
-    ("Stability & When to Use Each", "Algorithm Design Manual",
-     "LC: Custom Sort String", "Sorting algorithm chooser")
-]
-content.append(create_week_table(28, "Advanced Sorting", week28_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
+content.append(create_week_box(
+    28,
+    "Capstone Project (Week 1)",
+    "Begin building comprehensive project",
+    "None - focus on building. Continue 1 LeetCode problem per day.",
+    "Set up project structure. Initialize Git repo. Create virtual environment. Set up database and models.",
+    "Build core backend functionality: all database models, CRUD operations, business logic.",
+    "Implement authentication if needed. Build API endpoints. Write tests as you go.",
+    "Continue backend implementation. Achieve >80% test coverage. Keep up with 1 problem/day.",
+    "Well-structured capstone project with working backend. ~35 total problems solved."
+))
 
 # Week 29
-content.append(Paragraph("Week 29: Binary Search - Mastery", styles['WeekHeader']))
-week29_days = [
-    ("Binary Search Foundation", "Grokking Algorithms Ch.1",
-     "LC: Binary Search", "Generic binary search template"),
-    ("Search Variants", "Elements of Programming",
-     "LC: Search Insert Position", "Find first/last occurrence"),
-    ("Binary Search on Answer", "Competitive Programming",
-     "LC: Find Peak Element", "Square root via binary search")
-]
-content.append(create_week_table(29, "Binary Search", week29_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    29,
+    "Capstone Project (Week 2)",
+    "Build frontend and polish project",
+    "None - focus on building. Continue 1 LeetCode problem per day.",
+    "Build frontend interface. Connect to API. Ensure all features work together end-to-end.",
+    "Style with CSS. Make it look professional. Test on different browsers if web app.",
+    "Fix bugs discovered during testing. Improve error handling and user experience.",
+    "Add any missing features. Ensure everything works smoothly. Maintain 1 problem/day habit.",
+    "Fully functional capstone project with professional frontend. ~39 total problems solved."
+))
+
+# content.append(PageBreak())
 
 # Week 30
-content.append(Paragraph("Week 30: Two Pointers Technique", styles['WeekHeader']))
-week30_days = [
-    ("Two Pointer Basics", "Elements of Programming",
-     "LC: Two Sum II", "Remove duplicates patterns"),
-    ("Fast & Slow Pointers", "Competitive Programming",
-     "LC: Linked List Cycle", "Find middle element"),
-    ("Sliding Window Intro", "Elements of Programming",
-     "LC: Container With Most Water", "Maximum sum subarray")
-]
-content.append(create_week_table(30, "Two Pointers", week30_days))
-content.append(Spacer(1, 10))
-
-# Week 31
-content.append(Paragraph("Week 31: Linked Lists", styles['WeekHeader']))
-week31_days = [
-    ("Linked List Basics", "CLRS Ch.10.2",
-     "LC: Reverse Linked List", "Singly linked list from scratch"),
-    ("Linked List Problems", "Elements of Programming",
-     "LC: Remove Nth Node", "Doubly linked list"),
-    ("Advanced LL Patterns", "Competitive Programming",
-     "LC: Merge Two Sorted Lists", "Detect cycle & find start")
-]
-content.append(create_week_table(31, "Linked Lists", week31_days))
-content.append(Spacer(1, 10))
-
-# Week 32
-content.append(Paragraph("Week 32: Stacks & Queues", styles['WeekHeader']))
-week32_days = [
-    ("Stack Implementation", "CLRS Ch.10.1",
-     "LC: Valid Parentheses", "Stack from scratch (array/LL)"),
-    ("Queue Implementation", "CLRS Ch.10.1",
-     "LC: Implement Queue using Stacks", "Circular queue"),
-    ("Stack/Queue Applications", "Elements of Programming",
-     "LC: Min Stack", "Expression evaluator")
-]
-content.append(create_week_table(32, "Stacks & Queues", week32_days))
-content.append(Spacer(1, 10))
+content.append(create_week_box(
+    30,
+    "Capstone Project (Week 3)",
+    "Complete, deploy, and document your work",
+    "None - focus on completion. Maintain 1 problem/day habit for life!",
+    "Write comprehensive tests if not already done. Aim for >80% coverage. Fix all bugs.",
+    "Write documentation: README with setup instructions, API docs if applicable, user guide.",
+    "Deploy project with CI/CD. Ensure it's accessible online. Verify all features work in production.",
+    "Write blog post explaining what you built, technologies used, challenges overcome. Reflect on 30-week journey!",
+    "Finished, tested, documented, and deployed capstone project. ~42-43 total problems solved. Daily problem habit established."
+))
 
 content.append(PageBreak())
 
-# Week 33
-content.append(Paragraph("Week 33: Trees - Binary Trees", styles['WeekHeader']))
-week33_days = [
-    ("Tree Terminology & Traversals", "CLRS Ch.12.1",
-     "LC: Max Depth of Binary Tree", "Binary tree from scratch"),
-    ("Recursive Tree Problems", "Elements of Programming",
-     "LC: Invert Binary Tree", "Preorder/Inorder/Postorder"),
-    ("Level Order Traversal", "CLRS Ch.12.1",
-     "LC: Binary Tree Level Order", "BFS on tree")
-]
-content.append(create_week_table(33, "Binary Trees", week33_days))
-content.append(Spacer(1, 10))
-
-# Week 34
-content.append(Paragraph("Week 34: Binary Search Trees", styles['WeekHeader']))
-week34_days = [
-    ("BST Properties", "CLRS Ch.12.1-12.2",
-     "LC: Validate BST", "BST insert/search/delete"),
-    ("BST Operations", "CLRS Ch.12.3",
-     "LC: Kth Smallest in BST", "BST successor/predecessor"),
-    ("Balanced BSTs Intro", "CLRS Ch.13 intro",
-     "LC: Delete Node in BST", "AVL tree (brief intro)")
-]
-content.append(create_week_table(34, "BST", week34_days))
-content.append(Spacer(1, 10))
-
-# Week 35
-content.append(Paragraph("Week 35: Hash Tables Deep Dive", styles['WeekHeader']))
-week35_days = [
-    ("Hash Function Design", "CLRS Ch.11",
-     "LC: Design HashSet", "Hash table from scratch"),
-    ("Collision Resolution", "CLRS Ch.11.2-11.3",
-     "LC: Design HashMap", "Chaining vs open addressing"),
-    ("Hash Table Applications", "Elements of Programming",
-     "LC: Group Anagrams", "Frequency counter, cache")
-]
-content.append(create_week_table(35, "Hash Tables", week35_days))
-content.append(Spacer(1, 10))
-
-# Week 36
-content.append(Paragraph("Week 36: Heaps & Priority Queues", styles['WeekHeader']))
-week36_days = [
-    ("Heap Properties", "CLRS Ch.6",
-     "LC: Kth Largest Element", "Min heap from scratch"),
-    ("Heap Operations", "CLRS Ch.6",
-     "LC: Top K Frequent Elements", "Max heap & heapify"),
-    ("Priority Queue Applications", "Elements of Programming",
-     "LC: Merge K Sorted Lists", "Task scheduler with PQ")
-]
-content.append(create_week_table(36, "Heaps", week36_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# Week 37
-content.append(Paragraph("Week 37: Graph Fundamentals", styles['WeekHeader']))
-week37_days = [
-    ("Graph Representations", "CLRS Ch.22.1",
-     "LC: Find Center of Star Graph", "Adjacency list & matrix"),
-    ("Graph Traversal - BFS", "CLRS Ch.22.2",
-     "LC: Number of Islands", "BFS implementation"),
-    ("Graph Traversal - DFS", "CLRS Ch.22.3",
-     "LC: Clone Graph", "DFS iterative & recursive")
-]
-content.append(create_week_table(37, "Graphs Intro", week37_days))
-content.append(Spacer(1, 10))
-
-# Week 38
-content.append(Paragraph("Week 38: Graph Algorithms - Paths", styles['WeekHeader']))
-week38_days = [
-    ("Shortest Path - Dijkstra", "CLRS Ch.24.3",
-     "LC: Network Delay Time", "Dijkstra with priority queue"),
-    ("Bellman-Ford Algorithm", "CLRS Ch.24.1",
-     "LC: Cheapest Flights K Stops", "Negative cycle detection"),
-    ("All-Pairs Shortest Path", "CLRS Ch.25",
-     "LC: Find the City", "Floyd-Warshall algorithm")
-]
-content.append(create_week_table(38, "Graph Paths", week38_days))
-content.append(Spacer(1, 10))
-
-# Week 39
-content.append(Paragraph("Week 39: Graph Algorithms - Trees", styles['WeekHeader']))
-week39_days = [
-    ("Minimum Spanning Tree - Kruskal", "CLRS Ch.23",
-     "LC: Min Cost to Connect Points", "Union-Find + Kruskal"),
-    ("MST - Prim's Algorithm", "CLRS Ch.23.2",
-     "LC: Min Cost to Connect Cities", "Prim with heap"),
-    ("Topological Sort", "CLRS Ch.22.4",
-     "LC: Course Schedule II", "Topo sort (DFS & BFS)")
-]
-content.append(create_week_table(39, "Graph Trees", week39_days))
-content.append(Spacer(1, 10))
-
-# Week 40
-content.append(Paragraph("Week 40: Algorithm Techniques Review", styles['WeekHeader']))
-week40_days = [
-    ("Greedy Algorithms", "CLRS Ch.16",
-     "LC: Jump Game", "Activity selection problem"),
-    ("Divide & Conquer", "CLRS Ch.4",
-     "LC: Majority Element", "Master theorem practice"),
-    ("Phase 2 Review & Portfolio", "Review all topics",
-     "LC: Mixed medium problems", "Algorithm visualization tool")
-]
-content.append(create_week_table(40, "Review", week40_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# ========== PHASE 3: SYSTEMS PROGRAMMING ==========
-content.append(Paragraph("■ PHASE 3: SYSTEMS PROGRAMMING WITH C (Weeks 41-56)", styles['PhaseHeader']))
+# ========== CAPSTONE IDEAS ==========
+content.append(Paragraph("🎯 Capstone Project Ideas", styles['TitleCustom']))
 content.append(Spacer(1, 8))
 
 content.append(Paragraph(
-    "<b>Note:</b> This phase introduces C programming and systems concepts. "
-    "The pace is deliberately slower to allow mastery of low-level concepts. "
-    "You'll understand how computers actually work at a deeper level.",
+    "Your capstone should demonstrate everything you've learned. Choose something that interests you:<br/><br/>"
+    
+    "<b>Personal Finance Tools:</b><br/>"
+    "• Budget tracker with spending analytics and visualizations<br/>"
+    "• Investment portfolio tracker with API data and historical charts<br/>"
+    "• Bill reminder and payment tracking system<br/><br/>"
+    
+    "<b>Content Management:</b><br/>"
+    "• Personal blog platform with markdown editor and RSS feed<br/>"
+    "• Recipe organizer with meal planning and shopping lists<br/>"
+    "• Reading list tracker with notes and recommendations<br/><br/>"
+    
+    "<b>Data Analysis:</b><br/>"
+    "• Stock screening tool with technical indicators<br/>"
+    "• Weather pattern analyzer with historical data<br/>"
+    "• Text analysis tool (sentiment, keywords, summaries)<br/><br/>"
+    
+    "<b>Automation:</b><br/>"
+    "• Job application tracker with deadline reminders<br/>"
+    "• Habit tracker with streaks and statistics<br/>"
+    "• Automated report generator from data sources<br/><br/>"
+    
+    "<b>Requirements for any capstone:</b><br/>"
+    "• 500+ lines of code<br/>"
+    "• Database with multiple related tables<br/>"
+    "• User authentication (if multi-user)<br/>"
+    "• API or significant data processing component<br/>"
+    "• Test coverage >80%<br/>"
+    "• Professional documentation<br/>"
+    "• Deployed and accessible online<br/>"
+    "• Solves a real problem or demonstrates interesting technical skills",
     styles['BodyJustify']
 ))
-content.append(Spacer(1, 10))
-
-# Week 41
-content.append(Paragraph("Week 41: C Fundamentals", styles['WeekHeader']))
-week41_days = [
-    ("C Setup & Hello World", "K&R Ch.1",
-     "Compile & run C programs", "Hello World with arguments"),
-    ("Variables & Types in C", "K&R Ch.2",
-     "Type exercises", "sizeof() demonstration"),
-    ("Operators & Control Flow", "K&R Ch.3",
-     "LC: Factorial (in C)", "Temperature converter in C")
-]
-content.append(create_week_table(41, "C Intro", week41_days))
-content.append(Spacer(1, 10))
-
-# Week 42
-content.append(Paragraph("Week 42: Arrays & Strings in C", styles['WeekHeader']))
-week42_days = [
-    ("Arrays in C", "K&R Ch.5.1-5.5",
-     "Array exercises", "Array sum/average/max"),
-    ("C Strings", "K&R Ch.5.5",
-     "LC: Reverse String (in C)", "String library: strlen, strcpy"),
-    ("Command Line Arguments", "K&R Ch.5.10",
-     "LC: Valid Anagram (in C)", "CLI calculator in C")
-]
-content.append(create_week_table(42, "Arrays", week42_days))
-content.append(Spacer(1, 10))
-
-# Week 43
-content.append(Paragraph("Week 43: Pointers - The Power of C", styles['WeekHeader']))
-week43_days = [
-    ("Pointer Basics", "K&R Ch.5.1",
-     "Pointer exercises", "Swap function via pointers"),
-    ("Pointer Arithmetic", "K&R Ch.5.3",
-     "Pointer arithmetic drills", "Array traversal with pointers"),
-    ("Pointers & Arrays", "K&R Ch.5.4",
-     "LC: Reverse Array (in C)", "Generic swap function")
-]
-content.append(create_week_table(43, "Pointers", week43_days))
-content.append(Spacer(1, 10))
-
-# Week 44
-content.append(Paragraph("Week 44: Dynamic Memory", styles['WeekHeader']))
-week44_days = [
-    ("malloc & free", "K&R Ch.7.8.5",
-     "Memory allocation exercises", "Dynamic array implementation"),
-    ("Memory Leaks & Valgrind", "Valgrind quickstart",
-     "LC: Merge Sorted Array (C)", "Fix leaky programs"),
-    ("calloc, realloc", "K&R Ch.7.8.5",
-     "Memory exercises", "Resizable array (like vector)")
-]
-content.append(create_week_table(44, "Memory", week44_days))
-content.append(Spacer(1, 10))
 
 content.append(PageBreak())
 
-# Week 45
-content.append(Paragraph("Week 45: Structs & Function Pointers", styles['WeekHeader']))
-week45_days = [
-    ("Structures in C", "K&R Ch.6",
-     "Struct exercises", "Student database with structs"),
-    ("typedef & Nested Structs", "K&R Ch.6",
-     "LC: Intersection of Arrays", "Linked list node struct"),
-    ("Function Pointers", "K&R Ch.5.11",
-     "Function pointer exercises", "Generic sort with comparator")
-]
-content.append(create_week_table(45, "Structs", week45_days))
+# ========== COMPLETION PAGE ==========
+content.append(Paragraph("🎓 You've Completed 30 Weeks!", styles['TitleCustom']))
 content.append(Spacer(1, 10))
 
-# Week 46
-content.append(Paragraph("Week 46: Data Structures in C", styles['WeekHeader']))
-week46_days = [
-    ("Linked List in C", "CLRS Ch.10.2",
-     "LC: Reverse Linked List (C)", "Singly linked list library"),
-    ("Stack & Queue in C", "CLRS Ch.10.1",
-     "LC: Valid Parentheses (C)", "Stack & queue implementations"),
-    ("Binary Tree in C", "CLRS Ch.12",
-     "LC: Max Depth (C)", "Binary tree with malloc")
-]
-content.append(create_week_table(46, "DS in C", week46_days))
-content.append(Spacer(1, 10))
+content.append(Paragraph("What You've Accomplished", styles['SectionHeader']))
+content.append(Paragraph(
+    "Over 30 weeks and 400-500 hours, you have:<br/><br/>"
+    
+    "• Mastered Python from basics to advanced concepts<br/>"
+    "• Developed debugging skills and terminal proficiency<br/><br/>"
+    "• Created full-stack web applications with databases<br/>"
+    "• Built and deployed a comprehensive capstone project<br/>",
+    
+    styles['BodyJustify']
+))
+content.append(Spacer(1, 4))
 
-# Week 47
-content.append(Paragraph("Week 47: Computer Systems - Memory Hierarchy", styles['WeekHeader']))
-week47_days = [
-    ("Memory Hierarchy", "CSAPP Ch.6.1-6.2",
-     "Memory quiz", "Cache behavior demo"),
-    ("Cache Principles", "CSAPP Ch.6.3-6.4",
-     "Cache exercises", "Matrix multiply (cache-friendly)"),
-    ("Cache Optimization", "CSAPP Ch.6.6",
-     "Performance exercises", "Compare blocked vs naive")
-]
-content.append(create_week_table(47, "Memory Hierarchy", week47_days))
-content.append(Spacer(1, 10))
-
-# Week 48
-content.append(Paragraph("Week 48: Processes & Virtual Memory", styles['WeekHeader']))
-week48_days = [
-    ("Process Concepts", "OSTEP Ch.4-6",
-     "Process exercises", "Visualize process state machine"),
-    ("Virtual Memory Intro", "CSAPP Ch.9.1-9.3",
-     "VM exercises", "Address translation simulator"),
-    ("Page Tables", "OSTEP Ch.18-20",
-     "Page table exercises", "Simple page table simulation")
-]
-content.append(create_week_table(48, "Processes", week48_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# Week 49
-content.append(Paragraph("Week 49: System Calls", styles['WeekHeader']))
-week49_days = [
-    ("System Call Interface", "OSTEP Ch.5",
-     "System call exercises", "Strace exploration"),
-    ("Process Creation - fork", "OSTEP Ch.5",
-     "Fork exercises", "Parent-child communication"),
-    ("Process Control - exec", "Beej §5",
-     "Fork+exec exercises", "Simple shell (commands only)")
-]
-content.append(create_week_table(49, "System Calls", week49_days))
-content.append(Spacer(1, 10))
-
-# Week 50
-content.append(Paragraph("Week 50: Inter-Process Communication", styles['WeekHeader']))
-week50_days = [
-    ("Pipes", "Beej §7",
-     "Pipe exercises", "Parent-child via pipe"),
-    ("Signals", "OSTEP Ch.26",
-     "Signal handling exercises", "Signal handler demo"),
-    ("Shared Memory Intro", "OSTEP Ch.29",
-     "IPC exercises", "Producer-consumer with pipes")
-]
-content.append(create_week_table(50, "IPC", week50_days))
-content.append(Spacer(1, 10))
-
-# Week 51
-content.append(Paragraph("Week 51: Concurrency - Threads", styles['WeekHeader']))
-week51_days = [
-    ("Thread Basics", "OSTEP Ch.26",
-     "Thread exercises", "Create & join threads"),
-    ("Thread Arguments & Returns", "OSTEP Ch.27",
-     "Threading exercises", "Parallel sum"),
-    ("Race Conditions", "OSTEP Ch.28",
-     "Race condition demos", "Demonstrate data races")
-]
-content.append(create_week_table(51, "Threads", week51_days))
-content.append(Spacer(1, 10))
-
-# Week 52
-content.append(Paragraph("Week 52: Synchronization", styles['WeekHeader']))
-week52_days = [
-    ("Mutexes", "OSTEP Ch.28",
-     "Mutex exercises", "Thread-safe counter"),
-    ("Condition Variables", "OSTEP Ch.30",
-     "Condition var exercises", "Producer-consumer problem"),
-    ("Deadlock", "OSTEP Ch.32",
-     "Deadlock exercises", "Dining philosophers")
-]
-content.append(create_week_table(52, "Sync", week52_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# Week 53
-content.append(Paragraph("Week 53: Network Programming - Sockets", styles['WeekHeader']))
-week53_days = [
-    ("Socket Basics", "Beej §8-10",
-     "Socket exercises", "TCP echo client"),
-    ("Client-Server Model", "Beej §11",
-     "LC: Design Hit Counter", "Echo server"),
-    ("Multi-Client Server", "Beej §12",
-     "Server exercises", "Chat server (multi-threaded)")
-]
-content.append(create_week_table(53, "Sockets", week53_days))
-content.append(Spacer(1, 10))
-
-# Week 54
-content.append(Paragraph("Week 54: File Systems", styles['WeekHeader']))
-week54_days = [
-    ("File System Interface", "OSTEP Ch.39",
-     "FS exercises", "File operations (open/read/write)"),
-    ("File System Implementation", "OSTEP Ch.40",
-     "Inode exercises", "Understand inodes"),
-    ("Directories & Links", "OSTEP Ch.41",
-     "Directory exercises", "Recursive directory walker")
-]
-content.append(create_week_table(54, "File Systems", week54_days))
-content.append(Spacer(1, 10))
-
-# Week 55
-content.append(Paragraph("Week 55: Build Systems & Debugging", styles['WeekHeader']))
-week55_days = [
-    ("Makefiles", "GNU Make Manual Ch.1-2",
-     "Makefile exercises", "Multi-file C project"),
-    ("GDB Debugging", "GDB tutorial",
-     "Debug buggy C programs", "Use breakpoints & watches"),
-    ("Valgrind Mastery", "Valgrind manual",
-     "Fix memory leaks", "Clean all memory errors")
-]
-content.append(create_week_table(55, "Tools", week55_days))
-content.append(Spacer(1, 10))
-
-# Week 56
-content.append(Paragraph("Week 56: C Project & Phase 3 Review", styles['WeekHeader']))
-week56_days = [
-    ("Project Planning", "Review C concepts",
-     "Design project", "Plan HTTP server in C"),
-    ("Project Implementation", "N/A",
-     "Code project", "Build simple HTTP server"),
-    ("Project Polish & Review", "N/A",
-     "Finalize project", "Complete documentation")
-]
-content.append(create_week_table(56, "Project", week56_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# ========== PHASE 4: ADVANCED & SPECIALIZATION ==========
-content.append(Paragraph("■ PHASE 4: ADVANCED TOPICS & SPECIALIZATION (Weeks 57-72)", styles['PhaseHeader']))
+content.append(Paragraph("Next Steps: Illustrative Paths Forward", styles['SectionHeader']))
+content.append(Paragraph(
+    # "<b>Continue Building:</b> Build one project per month minimum to retain your skills. "
+    # "Maintain your daily 1 LeetCode problem habit—it compounds over months into deep expertise.<br/><br/>"
+    
+    "<b>Path 1: Web Developer (Most Jobs)</b><br/>"
+    "• Weeks 31-32: JavaScript/TypeScript fundamentals<br/>"
+    "• Weeks 33-34: React basics and component patterns<br/>"
+    "• Weeks 35-38: Next.js, Vercel deployment, server components<br/>"
+    "• Weeks 39-40: Rebuild capstone in Next.js<br/>"
+    "• Continue: 1 LeetCode/day, 1 side project/month<br/>"
+    "• Result: Full-stack developer with modern stack ($80-120k entry level)<br/><br/>"
+    
+    "<b>Path 2: Backend/Systems Engineer</b><br/>"
+    "• Learn C (K&R book), understand memory management<br/>"
+    "• <b>Bash scripting deep dive</b> (1-2 weeks): Automate system tasks, write deployment scripts<br/>"
+    "• Study networking (Beej's Guide), build socket programs<br/>"
+    "• Deep dive databases: query optimization, indexes, replication<br/>"
+    "• Consider Rust for modern systems programming<br/>"
+    "• Continue: 1 LeetCode/day focusing on systems problems<br/>"
+    "• Result: Backend specialist, infrastructure roles ($90-140k)<br/><br/>"
+    
+    "<b>Path 3: Data Analysis/Financial Engineering</b><br/>"
+    "• Master NumPy, pandas for data manipulation<br/>"
+    "• Learn data visualization: matplotlib, plotly, dashboards<br/>"
+    "• Statistics and probability foundations<br/>"
+    "• C for performance-critical algorithms if needed<br/>"
+    "• Build trading backtesting systems, portfolio analytics<br/>"
+    "• Continue: 1 LeetCode/day, especially DP and math problems<br/>"
+    "• Result: Quant developer, data analyst ($100-180k)<br/><br/>"
+    
+    "<b>Path 4: Machine Learning Engineer</b><br/>"
+    "• Mathematics: linear algebra, calculus, statistics (essential foundation)<br/>"
+    "• scikit-learn for classical ML<br/>"
+    "• PyTorch or TensorFlow for deep learning<br/>"
+    "• Deploy models with FastAPI<br/>"
+    "• Continue: 1 LeetCode/day, focus on optimization problems<br/>"
+    "• Result: ML engineer, AI roles ($110-160k)<br/><br/>"
+    
+    "<b>Path 5: Open Source Contributor</b><br/>"
+    "• Contribute to Python projects (Flask, pandas, pytest)<br/>"
+    "• Learn C/Rust to contribute to core tools (CPython, ripgrep)<br/>"
+    "• Build developer tools and libraries<br/>"
+    "• Continue: 1 LeetCode/day to strengthen problem-solving<br/>"
+    "• Result: Deep expertise, recognition, job opportunities<br/><br/>",
+    
+    styles['BodyJustify']
+))
 content.append(Spacer(1, 8))
 
-content.append(Paragraph(
-    "<b>Customization Note:</b> This phase allows you to choose a specialization path. "
-    "The weekly breakdown below shows one possible path (Backend/Systems focus). "
-    "You can substitute weeks based on your interests: ML/AI, Web Development, "
-    "Performance Engineering, or continue deepening algorithms.",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-# Week 57
-content.append(Paragraph("Week 57: Dynamic Programming - Foundation", styles['WeekHeader']))
-week57_days = [
-    ("DP Introduction & Memoization", "CLRS Ch.15.1",
-     "LC: Fibonacci DP", "Memoization vs tabulation"),
-    ("1D DP Problems", "CLRS Ch.15.3",
-     "LC: Climbing Stairs", "Solve 5 classic 1D DP"),
-    ("DP Problem Recognition", "Elements of Programming",
-     "LC: House Robber", "Identify DP characteristics")
-]
-content.append(create_week_table(57, "DP Intro", week57_days))
-content.append(Spacer(1, 10))
-
-# Week 58
-content.append(Paragraph("Week 58: Dynamic Programming - 2D", styles['WeekHeader']))
-week58_days = [
-    ("Grid DP", "CLRS Ch.15.4",
-     "LC: Unique Paths", "All paths in grid"),
-    ("String DP", "CLRS Ch.15",
-     "LC: Longest Common Subsequence", "Edit distance"),
-    ("Knapsack Problem", "CLRS Ch.15.3",
-     "LC: Partition Equal Subset", "0/1 knapsack variations")
-]
-content.append(create_week_table(58, "DP 2D", week58_days))
-content.append(Spacer(1, 10))
-
-# Week 59
-content.append(Paragraph("Week 59: Dynamic Programming - Advanced", styles['WeekHeader']))
-week59_days = [
-    ("State Machine DP", "Competitive Programming",
-     "LC: Buy/Sell Stock variations", "State diagram approach"),
-    ("DP Optimization", "CLRS Ch.15",
-     "LC: Coin Change", "Space optimization tricks"),
-    ("DP Practice Marathon", "Elements of Programming",
-     "LC: 10 DP problems", "Master DP thinking")
-]
-content.append(create_week_table(59, "DP Advanced", week59_days))
-content.append(Spacer(1, 10))
-
-# Week 60
-content.append(Paragraph("Week 60: Backtracking & Branch-and-Bound", styles['WeekHeader']))
-week60_days = [
-    ("Backtracking Pattern", "CLRS supplement",
-     "LC: Permutations", "Generate all combinations"),
-    ("Constraint Satisfaction", "Algorithm Design",
-     "LC: N-Queens", "Sudoku solver"),
-    ("Branch and Bound", "CLRS Ch.35",
-     "LC: Subsets II", "Traveling salesman (small)")
-]
-content.append(create_week_table(60, "Backtracking", week60_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# Week 61-64: Specialization (Example: Backend/Systems)
-content.append(Paragraph("Weeks 61-64: SPECIALIZATION PATH (Choose Yours)", styles['WeekHeader']))
-content.append(Spacer(1, 8))
-content.append(Paragraph("<b>Path A: Backend Development</b>", styles['SectionHeader']))
-
-week61_days = [
-    ("Web Framework (Flask/FastAPI)", "Flask/FastAPI docs",
-     "API exercises", "REST API with CRUD"),
-    ("Database Basics (SQL)", "SQL tutorial",
-     "SQL exercises", "SQLite database operations"),
-    ("ORM & Migrations", "SQLAlchemy docs",
-     "Database design", "Blog API with database")
-]
-content.append(create_week_table(61, "Backend 1", week61_days))
-content.append(Spacer(1, 10))
-
-week62_days = [
-    ("Authentication & Security", "OWASP basics",
-     "Auth exercises", "JWT authentication"),
-    ("API Design Best Practices", "REST API design",
-     "Design exercises", "Versioned API"),
-    ("Testing APIs", "pytest docs",
-     "API test suite", "Integration tests")
-]
-content.append(create_week_table(62, "Backend 2", week62_days))
-content.append(Spacer(1, 10))
-
-week63_days = [
-    ("Caching Strategies", "Redis basics",
-     "Caching exercises", "API with Redis cache"),
-    ("Message Queues", "RabbitMQ/Celery tutorial",
-     "Queue exercises", "Async task processing"),
-    ("Microservices Intro", "Microservices primer",
-     "Service design", "Split monolith into services")
-]
-content.append(create_week_table(63, "Backend 3", week63_days))
-content.append(Spacer(1, 10))
-
-week64_days = [
-    ("Docker Basics", "Docker tutorial",
-     "Containerization", "Dockerize Python app"),
-    ("CI/CD Pipeline", "GitHub Actions",
-     "Pipeline setup", "Automated testing"),
-    ("Deployment", "Deployment guide",
-     "Deploy exercises", "Deploy to cloud platform")
-]
-content.append(create_week_table(64, "Backend 4", week64_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# Alternative specialization mentions
-content.append(Paragraph("<b>Alternative Specialization Paths:</b>", styles['SectionHeader']))
-content.append(Paragraph(
-    "<b>Path B: Machine Learning</b><br/>"
-    "• Week 61: NumPy & Pandas mastery<br/>"
-    "• Week 62: scikit-learn fundamentals<br/>"
-    "• Week 63: Neural networks with PyTorch/TensorFlow<br/>"
-    "• Week 64: ML project (classification/regression)<br/><br/>"
-    
-    "<b>Path C: Web Development</b><br/>"
-    "• Week 61: HTML/CSS/JavaScript basics<br/>"
-    "• Week 62: React fundamentals<br/>"
-    "• Week 63: Full-stack app (React + Python)<br/>"
-    "• Week 64: Deployment & production<br/><br/>"
-    
-    "<b>Path D: Systems & Performance</b><br/>"
-    "• Week 61: Profiling & optimization<br/>"
-    "• Week 62: Parallel programming (multiprocessing)<br/>"
-    "• Week 63: SIMD & vectorization<br/>"
-    "• Week 64: GPU programming intro (CUDA)<br/>",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 12))
-
-# Week 65-68: Advanced topics (universal)
-content.append(Paragraph("Weeks 65-68: Advanced Software Engineering", styles['WeekHeader']))
-
-week65_days = [
-    ("Design Patterns - Creational", "Gang of Four Ch.3",
-     "Pattern exercises", "Singleton, Factory, Builder"),
-    ("Design Patterns - Structural", "Gang of Four Ch.4",
-     "Pattern exercises", "Adapter, Decorator, Proxy"),
-    ("Design Patterns - Behavioral", "Gang of Four Ch.5",
-     "Pattern exercises", "Observer, Strategy, Command")
-]
-content.append(create_week_table(65, "Patterns", week65_days))
-content.append(Spacer(1, 10))
-
-week66_days = [
-    ("System Design - Scalability", "System Design Primer",
-     "Design exercises", "Design URL shortener"),
-    ("System Design - Availability", "Designing Data-Intensive Apps",
-     "Design exercises", "Design cache system"),
-    ("System Design - Databases", "Database internals",
-     "Design exercises", "Design rate limiter")
-]
-content.append(create_week_table(66, "System Design", week66_days))
-content.append(Spacer(1, 10))
-
-week67_days = [
-    ("Code Quality & Refactoring", "Clean Code",
-     "Refactoring exercises", "Refactor legacy code"),
-    ("Code Review Skills", "Code review best practices",
-     "Review exercises", "Review & improve code"),
-    ("Documentation", "Documentation guide",
-     "Doc exercises", "Write API documentation")
-]
-content.append(create_week_table(67, "Quality", week67_days))
-content.append(Spacer(1, 10))
-
-week68_days = [
-    ("Git Advanced", "Git Pro book",
-     "Git exercises", "Rebase, cherry-pick, bisect"),
-    ("Open Source Contribution", "Contributing guide",
-     "Find issue to fix", "Make first contribution"),
-    ("Technical Writing", "Writing guide",
-     "Blog post", "Write about what you learned")
-]
-content.append(create_week_table(68, "Skills", week68_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# Week 69-72: Capstone
-content.append(Paragraph("Weeks 69-72: CAPSTONE PROJECT", styles['PhaseHeader']))
-content.append(Spacer(1, 8))
-
-content.append(Paragraph(
-    "Your capstone project should be a substantial application that demonstrates mastery across multiple domains. "
-    "It should combine algorithms, data structures, systems programming concepts (if applicable), "
-    "and software engineering best practices. This is your portfolio centerpiece.",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("<b>Capstone Project Ideas:</b>", styles['SectionHeader']))
-content.append(Paragraph(
-    "• <b>Database System:</b> Build a simple relational database from scratch in C/Python<br/>"
-    "• <b>Web Crawler & Search:</b> Distributed crawler with search engine (inverted index, ranking)<br/>"
-    "• <b>Compiler/Interpreter:</b> Build interpreter for simple language (tokenizer, parser, evaluator)<br/>"
-    "• <b>Distributed System:</b> Key-value store with replication and consistency guarantees<br/>"
-    "• <b>ML Pipeline:</b> End-to-end ML system (data collection, training, serving, monitoring)<br/>"
-    "• <b>Game Engine:</b> 2D game engine with physics, rendering, and scripting<br/>"
-    "• <b>Operating System Kernel:</b> Minimal OS kernel (bootloader, memory management, processes)<br/>"
-    "• <b>Network Protocol:</b> Implement TCP/IP stack or custom protocol<br/>",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-week69_days = [
-    ("Project Planning & Design", "System design review",
-     "Architecture design", "Write design document"),
-    ("Setup & Foundation", "Best practices review",
-     "Project scaffolding", "Setup repo, CI/CD, tests"),
-    ("Core Feature 1", "N/A",
-     "Implementation", "Build first major feature")
-]
-content.append(create_week_table(69, "Capstone Week 1", week69_days))
-content.append(Spacer(1, 10))
-
-week70_days = [
-    ("Core Feature 2", "N/A",
-     "Implementation", "Build second feature"),
-    ("Core Feature 3", "N/A",
-     "Implementation", "Integration work"),
-    ("Testing & Debugging", "Testing best practices",
-     "Write tests", "Achieve 80%+ coverage")
-]
-content.append(create_week_table(70, "Capstone Week 2", week70_days))
-content.append(Spacer(1, 10))
-
-week71_days = [
-    ("Performance Optimization", "Profiling guide",
-     "Profile & optimize", "Improve critical paths"),
-    ("Documentation", "Doc standards",
-     "Write docs", "README, API docs, architecture"),
-    ("Polish & Edge Cases", "QA checklist",
-     "Bug fixes", "Handle edge cases")
-]
-content.append(create_week_table(71, "Capstone Week 3", week71_days))
-content.append(Spacer(1, 10))
-
-week72_days = [
-    ("Demo Preparation", "Presentation guide",
-     "Prepare demo", "Create demo video"),
-    ("Portfolio Update", "Portfolio best practices",
-     "Update portfolio", "Showcase all projects"),
-    ("Reflection & Next Steps", "Career planning",
-     "Plan next steps", "Set goals for continued learning")
-]
-content.append(create_week_table(72, "Capstone Week 4", week72_days))
-content.append(Spacer(1, 10))
-
-content.append(PageBreak())
-
-# ========== FINAL PAGE: CONGRATULATIONS ==========
-content.append(Paragraph("🎉 Congratulations on Completing Your Journey!", styles['TitleCustom']))
-content.append(Spacer(1, 12))
-
-content.append(Paragraph("🏆 What You've Accomplished", styles['SectionHeader']))
-
-achievement_data = [
-    ["✓", "216 learning sessions over 72 weeks"],
-    ["✓", "Mastered Python from basics to advanced concepts"],
-    ["✓", "Implemented all major data structures from scratch"],
-    ["✓", "Solved 150+ algorithmic problems"],
-    ["✓", "Learned C and systems programming fundamentals"],
-    ["✓", "Built 30+ projects for your portfolio"],
-    ["✓", "Completed a capstone project demonstrating mastery"],
-    ["✓", "Developed problem-solving skills that will last a career"],
-]
-
-achievement_table = Table(achievement_data, colWidths=[0.5*inch, 7*inch])
-achievement_table.setStyle(TableStyle([
-    ('ALIGN', (0,0), (0,-1), 'CENTER'),
-    ('ALIGN', (1,0), (1,-1), 'LEFT'),
-    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-    ('FONTSIZE', (0,0), (-1,-1), 11),
-    ('TEXTCOLOR', (0,0), (0,-1), colors.HexColor('#2E7D32')),
-    ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
-    ('FONTSIZE', (0,0), (0,-1), 14),
-    ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-    ('TOPPADDING', (0,0), (-1,-1), 8),
-]))
-
-content.append(achievement_table)
-content.append(Spacer(1, 12))
-
-content.append(Paragraph("🚀 Your Path Forward", styles['SectionHeader']))
-content.append(Paragraph(
-    "<b>1. Contribute to Open Source:</b> Find projects that interest you. Start with small contributions. "
-    "Open source is how you join the global programmer community.<br/><br/>"
-    
-    "<b>2. Build in Public:</b> Share your learning journey. Write blog posts about what you've learned. "
-    "Teaching others solidifies your own understanding.<br/><br/>"
-    
-    "<b>3. Specialize Deeper:</b> Choose one domain and go deep. Whether it's distributed systems, machine learning, "
-    "graphics, databases, or security - become an expert.<br/><br/>"
-    
-    "<b>4. Network & Collaborate:</b> Attend meetups, conferences, hackathons. Join online communities. "
-    "Some of the best learning happens in collaboration.<br/><br/>"
-    
-    "<b>5. Never Stop Building:</b> The best way to stay sharp is to keep building. Real projects teach what "
-    "textbooks cannot. Build things that solve problems you care about.<br/><br/>"
-    
-    "<b>6. Interview Preparation:</b> If seeking employment, allocate 2-3 months for focused interview prep. "
-    "Use your foundation to quickly master interview-specific patterns.<br/><br/>"
-    
-    "<b>7. Continuous Learning:</b> Technology evolves rapidly. Dedicate time weekly to learning new things. "
-    "Read papers, try new languages, explore new paradigms.",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 12))
-
-content.append(Paragraph("💭 Final Thoughts", styles['SectionHeader']))
-content.append(Paragraph(
-    "You started this journey 72 weeks ago, perhaps uncertain about programming. "
-    "Now you have the tools, knowledge, and confidence to build complex software systems. "
-    "You understand not just <i>how</i> to code, but <i>why</i> things work the way they do.<br/><br/>"
-    
-    "Remember: you haven't learned everything about programming (no one ever does), but you've learned "
-    "<b>how to learn</b>. You know how to read documentation, debug systematically, and break down complex "
-    "problems. These meta-skills are more valuable than any specific technology.<br/><br/>"
-    
-    "The world needs what you can build. Your engineering background combined with programming skills "
-    "puts you in a unique position to solve important problems. Go build something amazing.",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 12))
-
-content.append(Paragraph(
-    '"The best time to plant a tree was 20 years ago. The second best time is now." '
-    '— You\'ve already planted your tree. Now watch it grow.',
-    styles['QuoteStyle']
-))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph(
-    '"Programs must be written for people to read, and only incidentally for machines to execute." '
-    '— Abelson & Sussman, <i>Structure and Interpretation of Computer Programs</i>',
-    styles['QuoteStyle']
-))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("<b>Now go build something amazing. 🚀</b>", styles['SubtitleCustom']))
-
-content.append(PageBreak())
-
-# ========== APPENDICES ==========
-content.append(Paragraph("📚 Appendix: Recommended Resources", styles['TitleCustom']))
-content.append(Spacer(1, 12))
-
-content.append(Paragraph("<b>Free Online Resources</b>", styles['SectionHeader']))
-content.append(Paragraph(
-    "• <b>Python:</b> python.org/docs, realpython.com, pythontutor.com (visualizer)<br/>"
-    "• <b>Algorithms:</b> visualgo.net, algorithm-visualizer.org<br/>"
-    "• <b>LeetCode:</b> leetcode.com (use Explore section for guided learning)<br/>"
-    "• <b>CS Fundamentals:</b> teachyourselfcs.com, cs.stackexchange.com<br/>"
-    "• <b>Systems:</b> ops-class.org, OS Three Easy Pieces (free book)<br/>"
-    "• <b>Git:</b> learngitbranching.js.org, git-scm.com/book<br/>"
-    "• <b>YouTube:</b> MIT OpenCourseWare, freeCodeCamp, CS Dojo, Tech With Tim",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("<b>Communities</b>", styles['SectionHeader']))
-content.append(Paragraph(
-    "• Reddit: r/learnprogramming, r/python, r/cscareerquestions<br/>"
-    "• Discord: Python Discord, The Programmer's Hangout<br/>"
-    "• Stack Overflow: stackoverflow.com (search first, then ask)<br/>"
-    "• GitHub: Follow interesting developers, read their code",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("<b>Development Tools</b>", styles['SectionHeader']))
-content.append(Paragraph(
-    "• <b>IDE:</b> VS Code (free, excellent), PyCharm Community<br/>"
-    "• <b>Terminal:</b> iTerm2 (Mac), Windows Terminal, tmux<br/>"
-    "• <b>Version Control:</b> Git + GitHub/GitLab<br/>"
-    "• <b>Python Tools:</b> pip, venv, black (formatter), pylint<br/>"
-    "• <b>C Tools:</b> gcc, gdb, valgrind, make<br/>"
-    "• <b>Notebook:</b> Jupyter (for exploration), Obsidian (notes)",
-    styles['BodyJustify']
-))
-content.append(Spacer(1, 10))
-
-content.append(Paragraph("<b>Learning Tips</b>", styles['SectionHeader']))
-content.append(Paragraph(
-    "• <b>Spaced Repetition:</b> Review previous weeks' material regularly<br/>"
-    "• <b>Active Recall:</b> Code without looking at solutions first<br/>"
-    "• <b>Teach Others:</b> Best way to verify your understanding<br/>"
-    "• <b>Deliberate Practice:</b> Work slightly beyond your comfort zone<br/>"
-    "• <b>Rest:</b> Your brain consolidates learning during sleep<br/>"
-    "• <b>Consistency > Intensity:</b> 3 hours/day, 3 days/week beats 12-hour weekend binges<br/>"
-    "• <b>Project-Based:</b> Apply concepts immediately in projects<br/>"
-    "• <b>Debug Mindset:</b> Errors are learning opportunities, not failures",
-    styles['BodyJustify']
-))
-
-content.append(Spacer(1, 12))
-content.append(Paragraph("— End of Syllabus —", styles['SubtitleCustom']))
+content.append(Paragraph("— End of Syllabus —", styles['Quote']))
 
 # Build PDF
 doc.build(content, onFirstPage=add_page_footer, onLaterPages=add_page_footer)
 
-print(f"✅ Improved syllabus generated: {OUTPUT_PATH}")
-print(f"📊 Total days: {day_counter - 1}")
-print(f"📅 Duration: {TOTAL_WEEKS} weeks ({TOTAL_WEEKS/4:.1f} months)")
-print(f"🎯 More realistic pacing for engineering graduates")
-print(f"📚 Focused mastery over breadth")
+print(f"✅ Syllabus v3 generated: {OUTPUT_PATH}")
+print("✅ Week boxes will stay on single pages (no mid-week splits)")
