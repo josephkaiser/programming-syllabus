@@ -1,0 +1,42 @@
+# macOS system files
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# C/C++ build files
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+*.lo
+*.la
+*.lai
+*.pch
+*.swp
+*.stackdump
+
+# General IDE/editor files
+*.vscode/
+*.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Log files
+*.log
+
+# Ignore environment files (if any)
+.env
+.venv/
