@@ -1,8 +1,10 @@
 # 30-Week Programming Foundation
 
-My personal learning path for mastering Python, web development, and algorithms. Sharing openly for anyone who finds it useful.
+My personal syllabus for getting started learning Python, web development and algorithms.
+The syllabus PDF is created by the syllabus-generator.py file.
+As I go through the course, I plan to update the repo to include solutions & project code.
 
-## 📄 Syllabus
+## 1. Syllabus
 
 Generate the complete syllabus PDF:
 
@@ -11,19 +13,17 @@ pip install reportlab
 python syllabus_generator.py
 ```
 
-## 📋 Overview
+## 2. Overview
 
 - **Weeks 1-10**: Python fundamentals, debugging, OOP, testing, APIs
 - **Weeks 11-18**: Web development (Flask), SQL, authentication, REST APIs
 - **Weeks 19-24**: Terminal, Git, CI/CD, testing, deployment, performance
-- **Weeks 25-30**: Algorithms (~40 LeetCode problems), capstone project
+- **Weeks 25-30**: Algorithms, capstone project
 
 **Schedule**: 4 days/week, 3-4 hours/day (~400-500 hours total)
 
-## 🎯 Philosophy
+## 3. Philosophy
 
-Built for retention over speed. High-level guidance without being prescriptive. Points to resources; you navigate them. Emphasizes daily habits (1 LeetCode/day) that compound over time.
+Aims to provide structure for autodidacts seeking a well-rounded curriculum covering a broad assortment of modern programming skills and workflows.
 
 ---
-
-This is my personal learning directory. Feel free to use, modify, or adapt the syllabus for your own journey.
