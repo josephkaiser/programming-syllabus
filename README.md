@@ -1,7 +1,9 @@
 # 30-Week Programming Foundation
 
 My personal syllabus for getting started learning Python, web development and algorithms.
-The syllabus PDF is created by the syllabus-generator.py file.
+
+Note: The syllabus PDF is created by the syllabus-generator.py file.
+
 As I go through the course, I plan to update the repo to include solutions & project code.
 
 ## 1. Syllabus
