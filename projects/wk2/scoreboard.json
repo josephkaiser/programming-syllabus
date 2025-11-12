@@ -1,0 +1,22 @@
+{
+    "players": [
+        {
+            "name": "Joe",
+            "best_streak": 5,
+            "highest_rank": "Getting Into It",
+            "total_games": 22,
+            "total_wins": 17,
+            "times_played": 9,
+            "last_played": "2025-11-07 20:05:19"
+        },
+        {
+            "name": "John Pork",
+            "best_streak": 10,
+            "highest_rank": "Ultimate",
+            "total_games": 11,
+            "total_wins": 10,
+            "times_played": 1,
+            "last_played": "2025-11-07 19:46:09"
+        }
+    ]
+}

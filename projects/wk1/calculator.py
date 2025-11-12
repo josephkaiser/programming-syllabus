@@ -27,6 +27,48 @@ def get_operator(prompt):
             return ops
         print("enter a valid operator + - * / or 'q' to quit.")
 
+def safe_operation_dispatcher(operation, x, y):
+    def add(a, b):
+        return a + b
+    
+    def subtract(a, b):
+        return a - b
+    
+    def multiply(a, b):
+        return a * b
+    
+    def divide(a, b):
+        if b == 0:
+            raise ValueError("Cannot divide by zero")
+        return a / b
+    
+    operations = {
+        'add': add,
+        'subtract': subtract,
+        'multiply': multiply,
+        'divide': divide
+    }
+    
+    try:
+        if operation not in operations:
+            raise ValueError(f"Unknown operation: {operation}")
+        
+        func = operations[operation]
+        result = func(x, y)
+        return {"success": True, "result": result}
+    
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+# Examples
+print(safe_operation_dispatcher('add', 5, 3))      
+# Output: {'success': True, 'result': 8}
+
+print(safe_operation_dispatcher('divide', 10, 0))  
+# Output: {'success': False, 'error': 'Cannot divide by zero'}
+
+print(safe_operation_dispatcher('modulo', 10, 3))  
+# Output: {'success': False, 'error': 'Unknown operation: modulo'}
 def main():
     while True:
         print("this program takes input in three steps. First, enter a number and hit the 'enter' key. Second an operation (+, -, *, /) and hit 'enter' again. Third a number and hit 'enter' one more time.")

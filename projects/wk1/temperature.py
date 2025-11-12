@@ -66,6 +66,7 @@ def main():
             break
 
         # result = temperature_converter(a, u, t)
+        import pdb; pdb.set_trace()
         result = convert_pairwise(a, u, t)
         if result is None:
             print("Conversion failed — invalid unit combination.")
