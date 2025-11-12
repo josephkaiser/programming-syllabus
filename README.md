@@ -26,6 +26,8 @@ python syllabus_generator.py
 
 ## 3. Philosophy
 
-Aims to provide structure for autodidacts seeking a well-rounded curriculum covering a broad assortment of modern programming skills and workflows.
+Aims to provide an extended course-like syllabus that gives plenty of hands on practice spaced out appropriately for self-study. 
+
+30 weeks chosen to give space for many of the most important topics relevant to real world software development today, while remaining manageable in length. A very quick study could accomplish the coursework in much less time.
 
 ---
