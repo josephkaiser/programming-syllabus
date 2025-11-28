@@ -6,6 +6,4 @@
 
 3. Corrected UI elements
 
-4. Full debug walkthrough with pdb or dap
-
-5. 
+4. Full debug walkthrough with pdb or dap trying each scenario in the flow control tree
