@@ -1,2 +1,9 @@
-eat
 tell maya hi
+be sweet to maya
+say hi to maya
+edit cli prompt in todo.py app
+change q/c prompt to be less sudden... rn it is too much
+if quit, prompt to save or not
+remove Press 'q' to quit or hit enter to continue for after add task
+say hi to maya
+fix this stupid app

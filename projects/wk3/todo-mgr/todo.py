@@ -17,7 +17,7 @@ COMPLETED = "completed.txt"
 # Functions
 def add_task(user_content):
     """# append to tasks list"""
-    task = input(" > ")
+    task = input(" + ")
     user_content.append(task)
     return user_content
 
@@ -30,24 +30,29 @@ def remove_task(user_content):
         for index, task in enumerate(user_content):
             print(f"Task {index}: {task}")
         remove_index = input(" > ")
-        remove_index = int(remove_index.strip())
         try:
-            remove_task = user_content.pop(remove_index)
+            remove_index = int(remove_index.strip())
         except:
             break
-    print(f"Removed {remove_task}")
+        remove_task = user_content.pop(remove_index)
+        print(f"Removed {remove_task}")
     return user_content
 
 def mark_complete(tasks, completed):
     """Move tasks to completed.txt"""
-    print("Which task would you like to mark complete?")
+    print("Which task would you like to mark complete (type e to end)?")
     completed_index = []
     while completed_index != 'q':
         """Complete loop for tasks"""
+        if completed_index == 'e':
+            return tasks, completed
         for index, task in enumerate(tasks):
             print(f"Task {index}: {task}")
         completed_index = input(" > ")
-        completed_index = int(completed_index.strip())
+        try:
+            completed_index = int(completed_index.strip())
+        except:
+            break
         completed_task = tasks.pop(completed_index)
         completed.append(completed_task)
     # print(f"Marked task {completed_task} complete")
@@ -87,6 +92,8 @@ def main():
         match user_input:
             case 1:
                 tasks = add_task(tasks)
+                display_content(tasks)
+                continue
             case 2:
                 tasks = remove_task(tasks)
             case 3:
