@@ -8,68 +8,150 @@ Version: 0.1.0
 Description: application to manage a to do list in a .txt file
 """
 
-# import pdb; pdb.set_trace()
+# import ipdb; ipdb.set_trace()
 
 # todo-mgr/
 TASKS = "tasks.txt"
 COMPLETED = "completed.txt"
 
 # Functions
+def get_user_input():
+    """Accept user input and parse to confirm format"""
+    while True:
+        user_input = input(" > ").strip().lower()
+        if user_input == 'q':
+            break
+        return user_input
+
+def pending_or_completed():
+    user_input = get_user_input()
+    if user_input == 'p':
+        return user_input
+    elif user_input == 'c':
+        return user_input
+
+
 def add_task(user_content):
     """# append to tasks list"""
-    task = input(" + ")
-    user_content.append(task)
+    user_input = input(" + ")
+    user_input = user_input.strip()
+    user_content.append(user_input)
+    print(f"✅ Added task: {user_input}")
     return user_content
 
-def remove_task(user_content):
+def remove_task(tasks, completed):
     """Remove from task list"""
-    print("Which task would you like to remove?")
-    remove_index = None
-    while remove_index != 'q':
-        """Remove loop for tasks"""
-        for index, task in enumerate(user_content):
-            print(f"Task {index}: {task}")
-        remove_index = input(" > ")
-        try:
-            remove_index = int(remove_index.strip())
-        except:
+    user_input = None
+    list_edited = None
+    while user_input != 'q':
+        print("Enter 'p' to remove pending tasks or 'c' to remove completed tasks or 'q' to quit")
+        user_input = input("(p/c): ").strip().lower()
+        
+        if user_input == 'q':
             break
+        elif user_input == 'p':
+            user_content = tasks
+            list_edited = 'tasks'
+        elif user_input == 'c':
+            user_content = completed
+            list_edited = 'completed'
+        else:
+            continue 
+
+        print("Which task would you like to remove?")
+        for index, task in enumerate(user_content, start=1):
+            print(f"Task {index}: {task}")
+        user_input = get_user_input()
+        # Break before doing removals if user entered 'q'
+        user_input = int(user_input)
+        remove_index = user_input - 1
+
         remove_task = user_content.pop(remove_index)
-        print(f"Removed {remove_task}")
-    return user_content
+        if list_edited == 'tasks':
+            print(f"Removed from {list_edited}, Task {user_input}: 🔲 {remove_task}") 
+    
+            print(f"Removed from {list_edited}, Done {user_input}: ✅ {remove_task}")
+        if user_input == 'p':
+            tasks = user_content
+            continue
+        elif user_input == 'c':
+            completed = user_content
+            continue
+        elif user_input == 'q':
+            return tasks, completed
+        else:
+            break
+
+    return tasks, completed
+
+def remove_all_tasks(tasks, completed):
+    tasks, completed = [], []
+    return tasks, completed
 
 def mark_complete(tasks, completed):
     """Move tasks to completed.txt"""
-    print("Which task would you like to mark complete (type e to end)?")
-    completed_index = []
-    while completed_index != 'q':
+    print("Which task would you like to mark complete (type 's' to save and end, or 'q' to quit without saving)?")
+    user_input = None
+    completed_index = None
+    while user_input != 'q':
         """Complete loop for tasks"""
-        if completed_index == 'e':
+        user_input = input(" > ").lower().strip()
+        if user_input == 'q':
+            break
+        elif user_input == 's':
             return tasks, completed
-        for index, task in enumerate(tasks):
-            print(f"Task {index}: {task}")
+        else:
+            continue
+
+        for index, task in enumerate(tasks, start=1):
+            print(f"Task List\n")
+            print(f"item\ttask")
+            print(f"{index}\t{task}")
         completed_index = input(" > ")
         try:
             completed_index = int(completed_index.strip())
         except:
             break
-        completed_task = tasks.pop(completed_index)
-        completed.append(completed_task)
+        try:
+            completed_task = tasks.pop(completed_index)
+            completed.append(completed_task)
+        except IndexError as e:
+            print(e)
     # print(f"Marked task {completed_task} complete")
     return tasks, completed
     # maybe add "[DONE]" prefix or move to separate list
 
-def display_content(user_content):
+def display_content(user_content, is_completed = None):
     """Print enumerated tasks with index numbers"""
-    for index, task in enumerate(user_content):
-        print(f"Task {index}: {task}")
+    if is_completed == 1:
+        print(f"Completed List\n")
+        print(f"item\ttask")
+        for index, task in enumerate(user_content, start=1):
+            print(f"{index}\t✅ {task}")
+    else:
+        print(f"Task List\n")
+        print(f"item\ttask")
+        for index, task in enumerate(user_content, start=1):
+            print(f"{index}\t🔲 {task}")
 
 def save_to_file(user_content, filename):
     """Write list to file, one item per line"""
     with open(filename, 'w') as f:
         for item in user_content:
             f.write(item + '\n')
+    print(f"✅ Saved! '{filename}' updated.")
 
+def print_menu():
+    """Main loop with menu"""
+    print("What would you like to do? (Press 'q' to quit)")
+    print("   n. Create new task")
+    print("   r. Remove a task")
+    print("   x. Delete all tasks")
+    print("   c. Mark pending task as complete")
+    print("   p. Show all pending tasks")
+    print("   d. Show all done / completed tasks")
+    print("   s. Save and quit")
+    print("   h. Print help menu")
 
 def main():
     with open(TASKS, 'r') as f:
@@ -77,36 +159,59 @@ def main():
     with open(COMPLETED, 'r') as f:
         completed = f.read().splitlines()
 
-    user_input = 0
+    user_input = None
+    print_menu()
     while user_input != 'q':
         """Main loop with menu"""
-        print("What would you like to do? (Press 'q' to quit)")
-        print("1. Add task")
-        print("2. Remove task")
-        print("3. Mark complete")
-        print("4. Display pending tasks")
-        print("5. Display completed tasks")
-        print("6. Save and quit")
         user_input = input(" > ")
-        user_input = int(user_input)
+        try:
+            user_input = str(user_input.strip().lower())
+        except ValueError as e:
+            continue
         match user_input:
-            case 1:
+            case 'n':
                 tasks = add_task(tasks)
+                # save_to_file(tasks, TASKS)
+                # print(f"✅ New task added and tasks.txt file updated.")
+                continue
+            case 'r':
+                tasks, completed = remove_task(tasks, completed)
+                # save_to_file(tasks, TASKS)
+                continue
+            case 'x':
+                print(f"Warning!")
+                print(f"You are about to delete all pending and completed tasks!")
+                print(f"Are you sure you'd like to proceed? (y/n)")
+                user_input = get_user_input()
+                if user_input == 'y':
+                    remove_all_tasks()
+                elif user_input == 'n':
+                    continue
+                else:
+                    continue
+
+            case 'c':
+                tasks, completed = mark_complete(tasks, completed)
+                # save_to_file(tasks, TASKS)
+                # save_to_file(completed, COMPLETED)
+                continue
+            case 'p':
                 display_content(tasks)
                 continue
-            case 2:
-                tasks = remove_task(tasks)
-            case 3:
-                tasks, completed = mark_complete(tasks, completed)
-            case 4:
-                display_content(tasks)
-            case 5:
-                display_content(completed)
-            case 6:
+            case 'd':
+                display_content(completed, is_completed=1)
+                continue
+            case 's':
                 save_to_file(tasks, TASKS)
                 save_to_file(completed, COMPLETED)
-        
-        user_input = input("Press 'q' to quit or hit enter to continue")
+                continue
+            case 'h':
+                print_menu()
+                continue
+            case 'q':
+                save_to_file(tasks, TASKS)
+                continue
+            # case # Catch all for other case?
 
 if __name__ == "__main__":
     main()
