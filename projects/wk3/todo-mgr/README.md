@@ -9,16 +9,16 @@ For Python syllabus week 3 project.
 #### Main CLI TUI loop with menu
 
 What would you like to do? (Press 'q' to quit)")
-1. Add task")
-2. Remove task")
-3. Mark complete")
-4. Display pending tasks")
-5. Display completed tasks")
-6. Save and quit")
+1 Add task")
+2 Remove task")
+3 Mark complete")
+4 Display pending tasks")
+5 Display completed tasks")
+6 Save and quit")
 
 #### Functions
 
-1. load_from_file
+1 load_from_file
 arguments: 
     file: a .txt file path
 
@@ -29,7 +29,7 @@ function:
     enumerate the list
     return the enumerated list object, called "tasks"
     
-2. add_task
+2 add_task
 arguments:
     tasks: enumerated list of .txt file with lines of task strings
 
@@ -38,7 +38,7 @@ function:
     append user input to main tasks List
     return modified tasks list
 
-3. remove_task
+3 remove_task
 arguments:
     tasks: enumerated list of .txt file with lines of task strings
 
@@ -49,7 +49,7 @@ function:
     re-enumerate tasks list
     write changes back to main tasks variable
 
-4. mark_complete
+4 mark_complete
 arguments:
     tasks: main tasks list
     completed: list of completed tasks
@@ -61,7 +61,7 @@ functions:
     confirm task was marked as completed
     write changes to tasks and completed
 
-5. display_content
+5 display_content
 arguments:
     user_content: tasks or completed objects
 
