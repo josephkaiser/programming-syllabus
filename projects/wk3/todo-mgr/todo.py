@@ -69,7 +69,7 @@ def remove_task(tasks, completed):
         remove_task = user_content.pop(remove_index)
         if list_edited == 'tasks':
             print(f"Removed from {list_edited}, Task {user_input}: 🔲 {remove_task}") 
-    
+        elif list_edited == 'completed':
             print(f"Removed from {list_edited}, Done {user_input}: ✅ {remove_task}")
         if user_input == 'p':
             tasks = user_content
@@ -90,34 +90,38 @@ def remove_all_tasks(tasks, completed):
 
 def mark_complete(tasks, completed):
     """Move tasks to completed.txt"""
-    print("Which task would you like to mark complete (type 's' to save and end, or 'q' to quit without saving)?")
     user_input = None
     completed_index = None
-    while user_input != 'q':
+    # while user_input != 'q':
+    print(f"Task List\n")
+    print(f"item\ttask")
+    print("Which task would you like to mark complete?") 
+    for index, task in enumerate(tasks, start=1):
+        print(f"{index}\t🔲 {task}")
+    while True:
         """Complete loop for tasks"""
-        user_input = input(" > ").lower().strip()
-        if user_input == 'q':
+        user_input = input(" : ").lower().strip()
+        
+        if user_input == 'c':
             break
-        elif user_input == 's':
-            return tasks, completed
-        else:
-            continue
-
-        for index, task in enumerate(tasks, start=1):
-            print(f"Task List\n")
-            print(f"item\ttask")
-            print(f"{index}\t{task}")
-        completed_index = input(" > ")
+        elif user_input == 'q':
+            break
+        
+        # elif user_input == 's':
+        #     print(f"Writing completed tasks...")
+        #     return tasks, completed
+        
         try:
-            completed_index = int(completed_index.strip())
-        except:
-            break
+            completed_index = int(user_input) - 1
+        except ValueError as e:
+            continue
         try:
             completed_task = tasks.pop(completed_index)
             completed.append(completed_task)
+            print(f"✅ Marked task {completed_task} complete")
         except IndexError as e:
-            print(e)
-    # print(f"Marked task {completed_task} complete")
+            continue
+        print("Enter 'c' to finish or another task number to mark as complete")
     return tasks, completed
     # maybe add "[DONE]" prefix or move to separate list
 
@@ -145,12 +149,12 @@ def print_menu():
     """Main loop with menu"""
     print("What would you like to do? (Press 'q' to quit)")
     print("   n. Create new task")
-    print("   r. Remove a task")
-    print("   x. Delete all tasks")
     print("   c. Mark pending task as complete")
+    print("   r. Remove a task")
     print("   p. Show all pending tasks")
     print("   d. Show all done / completed tasks")
     print("   s. Save and quit")
+    print("   x. Delete all tasks")
     print("   h. Print help menu")
 
 def main():
@@ -184,7 +188,7 @@ def main():
                 print(f"Are you sure you'd like to proceed? (y/n)")
                 user_input = get_user_input()
                 if user_input == 'y':
-                    remove_all_tasks()
+                    tasks, completed = remove_all_tasks(tasks, completed)
                 elif user_input == 'n':
                     continue
                 else:
@@ -209,7 +213,19 @@ def main():
                 print_menu()
                 continue
             case 'q':
-                save_to_file(tasks, TASKS)
+                print(f"Warning!")
+                print(f"You are about to quit without saving.")
+                print(f"Would you like to save first? (y/n)")
+                while True:
+                    quit_test = get_user_input()
+                    if quit_test == 'y':
+                        save_to_file(tasks, TASKS)
+                        save_to_file(completed, COMPLETED)
+                        user_input = 'q'
+                        break
+                    elif quit_test == 'n':
+                        user_input = 'q'
+                        break
                 continue
             # case # Catch all for other case?
 
